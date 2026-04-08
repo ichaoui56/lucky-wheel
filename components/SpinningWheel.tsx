@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { useRouter } from 'next/navigation';
 
 export interface Segment {
   id: string;
@@ -21,6 +22,7 @@ interface SpinningWheelProps {
   disabled?: boolean;
   onRequestSpin?: () => void;
   spinStatus?: string;
+  hasWon?: boolean; // Add prop to know if user has already won
 }
 
 export interface SpinningWheelHandle {
@@ -156,7 +158,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   disabled = false,
   onRequestSpin,
   spinStatus = "ONE SHOT",
+  hasWon = false,
 }, ref) => {
+  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
@@ -500,14 +504,59 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   // Determine if we're on desktop for additional spacing
   const isDesktop = dimensions.width >= 550;
 
+  const handleClaimPrize = () => {
+    router.push('/winning-info');
+  };
+
   return (
     <div className={`flex flex-col items-center justify-center w-full ${isDesktop ? 'py-8' : 'py-4 md:py-6'} gap-3 md:gap-4`}>
+      {/* Status Badge or Winner Button */}
       <div className={`text-center ${isDesktop ? 'mb-3' : 'mb-1 md:mb-2'}`}>
-        <div className={`inline-block ${isDesktop ? 'px-8 py-3' : 'px-4 md:px-6 py-1.5 md:py-2'} bg-gradient-to-r from-[#d4b898] to-[#c9a96e] rounded-full shadow-md`}>
-          <span className={`text-white font-bold ${isDesktop ? 'text-base' : 'text-xs md:text-sm'} tracking-wider`}>
-            {spinStatus}
-          </span>
-        </div>
+        {hasWon ? (
+          // Winner button that redirects to winning-info page
+          <button
+            onClick={handleClaimPrize}
+            className="group relative inline-flex items-center gap-2 px-6 md:px-8 py-2.5 md:py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
+            <svg 
+              className="w-5 h-5 text-white animate-bounce" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+              />
+            </svg>
+            <span className="text-white font-bold text-sm md:text-base tracking-wider">
+              🎉 CLAIM YOUR 500 DH PRIZE!
+            </span>
+            <svg 
+              className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-300" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M9 5l7 7-7 7" 
+              />
+            </svg>
+          </button>
+        ) : (
+          // Regular status badge
+          <div className={`inline-block ${isDesktop ? 'px-8 py-3' : 'px-4 md:px-6 py-1.5 md:py-2'} bg-gradient-to-r from-[#d4b898] to-[#c9a96e] rounded-full shadow-md`}>
+            <span className={`text-white font-bold ${isDesktop ? 'text-base' : 'text-xs md:text-sm'} tracking-wider`}>
+              {spinStatus}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Combined Wheel and Holder Container */}
@@ -528,12 +577,12 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 md:-translate-y-3 z-10">
             <div 
               className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[22px] sm:border-l-[15px] sm:border-r-[15px] sm:border-t-[28px] md:border-l-[20px] md:border-r-[20px] md:border-t-[36px] border-l-transparent border-r-transparent" 
-              style={{ borderTopColor: "#C9A96E" }} 
+              style={{ borderTopColor: hasWon ? "#10B981" : "#C9A96E" }} 
             />
           </div>
           <canvas
             ref={canvasRef}
-            className={`rounded-full shadow-xl transition-all duration-200 hover:shadow-2xl ${!disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-90'} ${isAnimating ? 'animate-pulse scale-105 shadow-3xl' : ''}`}
+            className={`rounded-full shadow-xl transition-all duration-200 ${!disabled && !hasWon ? 'cursor-pointer hover:shadow-2xl' : 'cursor-not-allowed opacity-90'} ${isAnimating ? 'animate-pulse scale-105 shadow-3xl' : ''}`}
             style={{
               boxShadow: isDesktop 
                 ? "0 20px 60px -12px rgba(0,0,0,0.25), 0 0 0 3px rgba(210,180,130,0.4)" 
@@ -542,7 +591,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
               height: '100%'
             }}
             onClick={() => {
-              if (!disabled && !isAnimating) {
+              if (!disabled && !hasWon && !isAnimating) {
                 setIsAnimating(true);
                 onRequestSpin?.();
                 setTimeout(() => setIsAnimating(false), 200);
@@ -565,7 +614,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
             style={{ 
               width: topKnobWidth, 
               height: dimensions.width * 0.044,
-              background: "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
+              background: hasWon 
+                ? "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)" 
+                : "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
               clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)" 
             }} 
           />
@@ -575,7 +626,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
             style={{ 
               width: "100%", 
               height: dimensions.width * 0.028,
-              background: "linear-gradient(180deg, #f0dfc8 0%, #e0c9a8 100%)", 
+              background: hasWon 
+                ? "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)" 
+                : "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
               borderRadius: "50% 50% 0 0 / 100% 100% 0 0", 
               marginTop: "-1px" 
             }} 
@@ -585,7 +638,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
           <div 
             style={{ 
               width: "100%", 
-              background: "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)", 
+              background: hasWon 
+                ? "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)" 
+                : "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)", 
               borderRadius: isDesktop ? "0 0 24px 24px" : "0 0 16px 16px", 
               padding: isDesktop 
                 ? `${dimensions.width * 0.04}px ${dimensions.width * 0.05}px ${dimensions.width * 0.045}px`
@@ -604,18 +659,20 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
                   : `clamp(11px, ${dimensions.width * 0.032}px, 16px)`,
                 fontWeight: 700, 
                 letterSpacing: isDesktop ? "0.2em" : "0.15em", 
-                color: "#6a4020", 
+                color: hasWon ? "#6a4020" : "#6a4020", 
                 textAlign: "center",
                 whiteSpace: "nowrap"
               }}
             >
-              {spinStatus.includes("YOU WON 500 DH!") ? "YOU WON 500 DH!" : spinStatus}
+              {hasWon ? "🎊 YOU WON! 🎊" : spinStatus.includes("YOU WON 500 DH!") ? "YOU WON 500 DH!" : spinStatus}
             </div>
             
             <div style={{ display: "flex", alignItems: "center", gap: isDesktop ? "12px" : "8px", width: "100%" }}>
-              <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
-              <span style={{ color: "#b09070", fontSize: isDesktop ? "14px" : "10px" }}>✦</span>
-              <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
+              <div style={{ flex: 1, height: "1px", background: hasWon ? "rgba(6, 95, 70, 0.25)" : "rgba(140,80,20,0.25)" }} />
+              <span style={{ color: hasWon ? "#b09070" : "#b09070", fontSize: isDesktop ? "14px" : "10px" }}>
+                {hasWon ? "🏆" : "✦"}
+              </span>
+              <div style={{ flex: 1, height: "1px", background: hasWon ? "rgba(140,80,20,0.25)" : "rgba(140,80,20,0.25)" }} />
             </div>
           </div>
           
@@ -624,7 +681,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
             style={{ 
               width: bottomKnobWidth, 
               height: dimensions.width * 0.022,
-              background: "linear-gradient(180deg, #c8a888 0%, #b09070 100%)", 
+              background: hasWon 
+                ? "linear-gradient(180deg, #c8a888 0%, #b09070 100%)" 
+                : "linear-gradient(180deg, #c8a888 0%, #b09070 100%)", 
               borderRadius: "0 0 40% 40% / 0 0 100% 100%", 
               marginTop: "-1px" 
             }} 

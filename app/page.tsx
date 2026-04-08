@@ -145,12 +145,13 @@ export default function Home() {
             onRequestSpin={handleRequestSpin}
             onSpinEnd={handleSpinEnd}
             spinStatus={getSpinStatus()}
+            hasWon={hasWon} // Add this prop
           />
         </div>
         <div className='bg-cream'>
-            <TestimonialCarousel />
+          <TestimonialCarousel />
         </div>
-      
+
       </div>
 
       {/* Modal: Another Chance */}
