@@ -27,28 +27,130 @@ export interface SpinningWheelHandle {
   spin: (targetId: string, minRotations?: number) => void;
 }
 
-const generateDefaultSegments = (): Segment[] => {
+// Responsive segment generator that scales based on wheel size
+const generateResponsiveSegments = (wheelSize: number): Segment[] => {
+  // Scale factor based on wheel size (base size is 500px)
+  const scaleFactor = wheelSize / 500;
+  
+  // Helper to scale margin from center
+  const scaleMargin = (baseMargin: number) => baseMargin * scaleFactor;
+  
+  // Helper to scale image size
+  const scaleImageSize = (baseSize: number) => baseSize * scaleFactor;
+  
+  // Helper to scale text container dimensions
+  const scaleTextContainer = (baseWidth: number, baseHeight: number) => ({
+    width: baseWidth * scaleFactor,
+    height: baseHeight * scaleFactor
+  });
+
   return [
-    { id: "prod-1", label: "Product 1", color: "#2c2c2c", type: 'image', rotation: 0, marginFromCenter: 140, imageSize: 80 },
-    { id: "text-2", label: "Another Chance", color: "#7a4f3a", type: 'text', textContent: "Another Chance!", rotation: 90, marginFromCenter: 130, textContainerSize: { width: 130, height: 35 } },
-    { id: "prod-3", label: "Product 3", color: "#3a5a7a", type: 'image', rotation: 0, marginFromCenter: 150, imageSize: 80 },
-    { id: "text-4", label: "200DH Card", color: "#4a7a3a", type: 'text', textContent: "200DH Card", rotation: 90, marginFromCenter: 120, textContainerSize: { width: 100, height: 35 } },
-    { id: "prod-5", label: "Product 5", color: "#7a3a5a", type: 'image', rotation: 0, marginFromCenter: 150, imageSize: 70 },
-    { id: "text-6", label: "Another Chance", color: "#5a3a7a", type: 'text', textContent: "Another Chance!", rotation: 90, marginFromCenter: 130, textContainerSize: { width: 130, height: 35 } },
-    { id: "prod-7", label: "Product 7", color: "#7a6a3a", type: 'image', rotation: 0, marginFromCenter: 150, imageSize: 65 },
-    { id: "text-8", label: "200DH Card", color: "#3a6a6a", type: 'text', textContent: "200DH Card", rotation: 90, marginFromCenter: 120, textContainerSize: { width: 105, height: 36 } },
-    { id: "prod-9", label: "Product 9", color: "#6a3a7a", type: 'image', rotation: 0, marginFromCenter: 150, imageSize: 75 },
-    { id: "text-10", label: "500DH Card", color: "#7a3a3a", type: 'text', textContent: "500DH Card", rotation: 90, marginFromCenter: 130, textContainerSize: { width: 115, height: 42 } },
+    { 
+      id: "prod-1", 
+      label: "Product 1", 
+      color: "#2c2c2c", 
+      type: 'image', 
+      rotation: 0, 
+      marginFromCenter: scaleMargin(140), 
+      imageSize: scaleImageSize(80) 
+    },
+    { 
+      id: "text-2", 
+      label: "Another Chance", 
+      color: "#7a4f3a", 
+      type: 'text', 
+      textContent: "Another Chance!", 
+      rotation: 90, 
+      marginFromCenter: scaleMargin(130), 
+      textContainerSize: scaleTextContainer(130, 35)
+    },
+    { 
+      id: "prod-3", 
+      label: "Product 3", 
+      color: "#3a5a7a", 
+      type: 'image', 
+      rotation: 0, 
+      marginFromCenter: scaleMargin(150), 
+      imageSize: scaleImageSize(80) 
+    },
+    { 
+      id: "text-4", 
+      label: "200DH Card", 
+      color: "#4a7a3a", 
+      type: 'text', 
+      textContent: "200DH Card", 
+      rotation: 90, 
+      marginFromCenter: scaleMargin(120), 
+      textContainerSize: scaleTextContainer(100, 35)
+    },
+    { 
+      id: "prod-5", 
+      label: "Product 5", 
+      color: "#7a3a5a", 
+      type: 'image', 
+      rotation: 0, 
+      marginFromCenter: scaleMargin(150), 
+      imageSize: scaleImageSize(70) 
+    },
+    { 
+      id: "text-6", 
+      label: "Another Chance", 
+      color: "#5a3a7a", 
+      type: 'text', 
+      textContent: "Another Chance!", 
+      rotation: 90, 
+      marginFromCenter: scaleMargin(130), 
+      textContainerSize: scaleTextContainer(130, 35)
+    },
+    { 
+      id: "prod-7", 
+      label: "Product 7", 
+      color: "#7a6a3a", 
+      type: 'image', 
+      rotation: 0, 
+      marginFromCenter: scaleMargin(150), 
+      imageSize: scaleImageSize(65) 
+    },
+    { 
+      id: "text-8", 
+      label: "200DH Card", 
+      color: "#3a6a6a", 
+      type: 'text', 
+      textContent: "200DH Card", 
+      rotation: 90, 
+      marginFromCenter: scaleMargin(120), 
+      textContainerSize: scaleTextContainer(105, 36)
+    },
+    { 
+      id: "prod-9", 
+      label: "Product 9", 
+      color: "#6a3a7a", 
+      type: 'image', 
+      rotation: 0, 
+      marginFromCenter: scaleMargin(150), 
+      imageSize: scaleImageSize(75) 
+    },
+    { 
+      id: "text-10", 
+      label: "500DH Card", 
+      color: "#7a3a3a", 
+      type: 'text', 
+      textContent: "500DH Card", 
+      rotation: 90, 
+      marginFromCenter: scaleMargin(130), 
+      textContainerSize: scaleTextContainer(115, 42)
+    },
   ];
 };
 
-const DEFAULT_SEGMENTS = generateDefaultSegments();
+// Default segments for initial render (will be replaced when dimensions are known)
+const DEFAULT_SEGMENTS = generateResponsiveSegments(500);
 
 // Ease out - slow end
 const easeOutQuart = (t: number): number => 1 - Math.pow(1 - t, 4);
 
 const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
-  segments = DEFAULT_SEGMENTS,
+  segments: externalSegments,
   onSpinEnd,
   onSpinStart,
   disabled = false,
@@ -65,6 +167,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   const [dimensions, setDimensions] = useState({ width: 500, height: 500 });
   const [imagesReady, setImagesReady] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  // Use responsive segments based on wheel size, or external segments if provided
+  const segments = externalSegments || generateResponsiveSegments(dimensions.width);
 
   const N = segments.length;
   const STEP = (Math.PI * 2) / N; // angle per segment
@@ -108,7 +213,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     ctx.fillStyle = fill;
     ctx.fill();
     ctx.strokeStyle = STROKE;
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = Math.max(1, dimensions.width * 0.0024); // Responsive stroke width
     ctx.stroke();
     ctx.restore();
   };
@@ -127,7 +232,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     if (rotation !== undefined) textAngle += (rotation * Math.PI) / 180;
     if (textAngle > Math.PI / 2 && textAngle < (3 * Math.PI) / 2) textAngle += Math.PI;
     ctx.rotate(textAngle);
-    const fontSize = textContainerSize?.height ? Math.min(textContainerSize.height * 0.4, 20) : Math.max(radius * 0.09, 14);
+    const fontSize = textContainerSize?.height 
+      ? Math.min(textContainerSize.height * 0.4, dimensions.width * 0.04) 
+      : Math.max(radius * 0.09, dimensions.width * 0.028);
     ctx.font = `bold ${fontSize}px "Georgia", serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -138,8 +245,8 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     const maxWidth = textContainerSize?.width || (Math.max(...lines.map(l => ctx.measureText(l).width)) + padding * 2);
     ctx.fillStyle = "rgba(255,255,255,0.9)";
     ctx.strokeStyle = "#d4a840";
-    ctx.lineWidth = 2;
-    const bgX = -maxWidth / 2, bgY = -totalHeight / 2, r = 8;
+    ctx.lineWidth = Math.max(1.5, dimensions.width * 0.004);
+    const bgX = -maxWidth / 2, bgY = -totalHeight / 2, r = Math.max(6, dimensions.width * 0.016);
     ctx.beginPath();
     ctx.moveTo(bgX + r, bgY);
     ctx.lineTo(bgX + maxWidth - r, bgY);
@@ -154,7 +261,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     ctx.fill();
     ctx.stroke();
     ctx.shadowColor = "rgba(0,0,0,0.3)";
-    ctx.shadowBlur = 4;
+    ctx.shadowBlur = Math.max(3, dimensions.width * 0.008);
     ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
     const gradient = ctx.createLinearGradient(0, -totalHeight / 2, 0, totalHeight / 2);
     gradient.addColorStop(0, "#2a1804");
@@ -192,7 +299,8 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
       const ratio = img.naturalWidth / img.naturalHeight;
       const dw = ratio >= 1 ? targetSize : targetSize * ratio;
       const dh = ratio >= 1 ? targetSize / ratio : targetSize;
-      ctx.shadowColor = "rgba(0,0,0,0.15)"; ctx.shadowBlur = 5;
+      ctx.shadowColor = "rgba(0,0,0,0.15)"; 
+      ctx.shadowBlur = Math.max(4, dimensions.width * 0.01);
       ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
       ctx.shadowColor = "transparent";
     } else {
@@ -206,10 +314,11 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
 
   const drawOuterDots = (ctx: CanvasRenderingContext2D, cx: number, cy: number, radius: number) => {
     const count = 40;
+    const dotSize = Math.max(2.5, dimensions.width * 0.007);
     for (let i = 0; i < count; i++) {
       const a = (i / count) * Math.PI * 2;
       ctx.beginPath();
-      ctx.arc(cx + Math.cos(a) * (radius + 12), cy + Math.sin(a) * (radius + 12), 3.5, 0, Math.PI * 2);
+      ctx.arc(cx + Math.cos(a) * (radius + dimensions.width * 0.024), cy + Math.sin(a) * (radius + dimensions.width * 0.024), dotSize, 0, Math.PI * 2);
       ctx.fillStyle = "#D4B98C";
       ctx.fill();
     }
@@ -221,7 +330,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     ctx.beginPath();
     ctx.arc(cx, cy, hr, 0, Math.PI * 2);
     ctx.fillStyle = "#e3d4b5"; ctx.fill();
-    ctx.strokeStyle = "#c9aa5f"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = "#c9aa5f"; 
+    ctx.lineWidth = Math.max(1.5, dimensions.width * 0.004); 
+    ctx.stroke();
     ctx.fillStyle = "#aa8c54";
     const m = hr * 0.5;
     ctx.beginPath();
@@ -264,30 +375,16 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     ctx.restore();
     drawOuterDots(ctx, cx, cy, radius);
     ctx.beginPath();
-    ctx.arc(cx, cy, radius + 6, 0, Math.PI * 2);
-    ctx.strokeStyle = "#EAD6B0"; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.arc(cx, cy, radius + dimensions.width * 0.012, 0, Math.PI * 2);
+    ctx.strokeStyle = "#EAD6B0"; 
+    ctx.lineWidth = Math.max(2, dimensions.width * 0.005); 
+    ctx.stroke();
     ctx.beginPath();
-    ctx.arc(cx, cy, radius - 2, 0, Math.PI * 2);
+    ctx.arc(cx, cy, radius - dimensions.width * 0.004, 0, Math.PI * 2);
     ctx.stroke();
     drawHub(ctx, cx, cy, radius);
   }, [dimensions, N, STEP, segments, imagesReady]);
 
-  /**
-   * CORE TARGETING MATH
-   *
-   * The wheel draws segment i starting at angle (i * STEP) in the wheel's LOCAL frame.
-   * The mid-angle of segment i in local frame = i * STEP + STEP/2
-   *
-   * When the wheel has rotation R applied, a point at local angle A
-   * appears at canvas angle (A + R).
-   *
-   * The pointer is fixed at canvas angle POINTER_ANGLE = -π/2 (top).
-   *
-   * We want: midAngle_local + R_final ≡ POINTER_ANGLE  (mod 2π)
-   * => R_final = POINTER_ANGLE - midAngle_local  (mod 2π)
-   *
-   * Then we add full extra rotations so the wheel spins visibly.
-   */
   const spinToSegmentId = useCallback((targetId: string, minRotations: number = 5) => {
     if (spinningRef.current) return;
 
@@ -300,32 +397,19 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     spinningRef.current = true;
     onSpinStart?.();
 
-    // Mid-angle of the target segment in the wheel's local (unrotated) frame
     const midAngleLocal = targetIndex * STEP + STEP / 2;
-
-    // The exact final rotation needed so pointer lands on target mid
-    // R_final = POINTER_ANGLE - midAngleLocal  (normalized to [0, 2π])
     const R_final_base = ((POINTER_ANGLE - midAngleLocal) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-
-    // Current rotation normalized to [0, 2π]
     const R_current = ((rotationRef.current % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-
-    // How much to rotate from current position to reach R_final_base
-    // We always spin FORWARD (positive direction)
     let delta = R_final_base - R_current;
-    if (delta <= 0) delta += Math.PI * 2; // ensure forward spin
-    if (delta < 0.01) delta += Math.PI * 2; // avoid near-zero spin
+    if (delta <= 0) delta += Math.PI * 2;
+    if (delta < 0.01) delta += Math.PI * 2;
 
-    // Add the mandatory extra full rotations (always forward)
     const extraFullRotations = minRotations * Math.PI * 2;
     const totalDelta = extraFullRotations + delta;
-
     const startRot = rotationRef.current;
     const endRot = startRot + totalDelta;
-    const duration = 5500; // ms
+    const duration = 5500;
     const startTime = performance.now();
-
-    console.log(`[Spin] target="${targetId}" index=${targetIndex} midLocal=${(midAngleLocal * 180 / Math.PI).toFixed(1)}° R_final=${(R_final_base * 180 / Math.PI).toFixed(1)}° delta=${(delta * 180 / Math.PI).toFixed(1)}° totalDelta=${(totalDelta * 180 / Math.PI).toFixed(1)}°`);
 
     const animateFrame = (now: number) => {
       const elapsed = now - startTime;
@@ -337,22 +421,10 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
       if (t < 1) {
         animationRef.current = requestAnimationFrame(animateFrame);
       } else {
-        // Lock to exact target
         rotationRef.current = endRot;
         drawWheel();
         spinningRef.current = false;
         animationRef.current = null;
-
-        // Verify landing
-        const finalRot = ((endRot % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-        const landedIndex = segments.findIndex((_, i) => {
-          const segStart = ((i * STEP + finalRot) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-          const segEnd = (((i + 1) * STEP + finalRot) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-          const ptr = ((POINTER_ANGLE % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-          if (segStart < segEnd) return ptr >= segStart && ptr < segEnd;
-          return ptr >= segStart || ptr < segEnd;
-        });
-        console.log(`[Spin] landed on index=${landedIndex} id=${segments[landedIndex]?.id}`);
         onSpinEnd?.(segments[targetIndex], targetIndex);
       }
     };
@@ -368,10 +440,32 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
-        const size = Math.min(containerRef.current.clientWidth, 800);
+        const parentWidth = containerRef.current.parentElement?.clientWidth || window.innerWidth;
+        
+        // Different sizing strategies for mobile vs desktop
+        const isMobile = window.innerWidth < 640;
+        const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
+        const isDesktop = window.innerWidth >= 1024;
+        
+        let size: number;
+        
+        if (isMobile) {
+          // Mobile: Max 85% of parent width, capped at 400px
+          const maxSize = Math.min(parentWidth - 32, 400);
+          size = Math.min(maxSize, window.innerHeight * 0.45);
+        } else if (isTablet) {
+          // Tablet: Max 80% of parent width, capped at 500px
+          const maxSize = Math.min(parentWidth - 40, 500);
+          size = Math.min(maxSize, window.innerHeight * 0.5);
+        } else {
+          // Desktop: Fixed at 550px for optimal visibility
+          size = 550;
+        }
+        
         setDimensions({ width: size, height: size });
       }
     };
+    
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
@@ -392,61 +486,150 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
 
   useEffect(() => {
     if (imagesReady) drawWheel();
-  }, [imagesReady, drawWheel]);
+  }, [imagesReady, drawWheel, segments]);
 
   useEffect(() => {
     return () => { if (animationRef.current) cancelAnimationFrame(animationRef.current); };
   }, []);
 
+  // Calculate holder width based on wheel size
+  const holderWidth = dimensions.width * 0.7;
+  const topKnobWidth = dimensions.width * 0.17;
+  const bottomKnobWidth = dimensions.width * 0.6;
+
+  // Determine if we're on desktop for additional spacing
+  const isDesktop = dimensions.width >= 550;
+
   return (
-    <div className="flex flex-col items-center justify-center w-full py-6 gap-4">
-      <div className="text-center mb-2">
-        <div className="inline-block px-6 py-2 bg-gradient-to-r from-[#d4b898] to-[#c9a96e] rounded-full shadow-md">
-          <span className="text-white font-bold text-sm tracking-wider">{spinStatus}</span>
+    <div className={`flex flex-col items-center justify-center w-full ${isDesktop ? 'py-8' : 'py-4 md:py-6'} gap-3 md:gap-4`}>
+      <div className={`text-center ${isDesktop ? 'mb-3' : 'mb-1 md:mb-2'}`}>
+        <div className={`inline-block ${isDesktop ? 'px-8 py-3' : 'px-4 md:px-6 py-1.5 md:py-2'} bg-gradient-to-r from-[#d4b898] to-[#c9a96e] rounded-full shadow-md`}>
+          <span className={`text-white font-bold ${isDesktop ? 'text-base' : 'text-xs md:text-sm'} tracking-wider`}>
+            {spinStatus}
+          </span>
         </div>
       </div>
 
-      <div
-        ref={containerRef}
-        className="relative mx-auto"
-        style={{ width: dimensions.width, height: dimensions.height, zIndex: 20 }}
+      {/* Combined Wheel and Holder Container */}
+      <div 
+        className="relative flex flex-col items-center px-4" 
+        style={{ 
+          width: '100%', 
+          maxWidth: isDesktop ? dimensions.width + 64 : dimensions.width + 32 
+        }}
       >
-        {/* Pointer arrow at top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 z-10">
-          <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-t-[36px] border-l-transparent border-r-transparent" style={{ borderTopColor: "#C9A96E" }} />
+        {/* Wheel Container */}
+        <div
+          ref={containerRef}
+          className="relative mx-auto"
+          style={{ width: dimensions.width, height: dimensions.height, zIndex: 20 }}
+        >
+          {/* Pointer arrow at top - responsive sizing */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 md:-translate-y-3 z-10">
+            <div 
+              className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[22px] sm:border-l-[15px] sm:border-r-[15px] sm:border-t-[28px] md:border-l-[20px] md:border-r-[20px] md:border-t-[36px] border-l-transparent border-r-transparent" 
+              style={{ borderTopColor: "#C9A96E" }} 
+            />
+          </div>
+          <canvas
+            ref={canvasRef}
+            className={`rounded-full shadow-xl transition-all duration-200 hover:shadow-2xl ${!disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-90'} ${isAnimating ? 'animate-pulse scale-105 shadow-3xl' : ''}`}
+            style={{
+              boxShadow: isDesktop 
+                ? "0 20px 60px -12px rgba(0,0,0,0.25), 0 0 0 3px rgba(210,180,130,0.4)" 
+                : "0 15px 45px -12px rgba(0,0,0,0.2), 0 0 0 2px rgba(210,180,130,0.3)",
+              width: '100%',
+              height: '100%'
+            }}
+            onClick={() => {
+              if (!disabled && !isAnimating) {
+                setIsAnimating(true);
+                onRequestSpin?.();
+                setTimeout(() => setIsAnimating(false), 200);
+              }
+            }}
+          />
         </div>
-        <canvas
-          ref={canvasRef}
-          className={`rounded-full shadow-xl transition-all duration-200 hover:shadow-2xl ${!disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-90'} ${isAnimating ? 'animate-pulse scale-105 shadow-3xl' : ''}`}
-          style={{
-            boxShadow: "0 15px 45px -12px rgba(0,0,0,0.2), 0 0 0 2px rgba(210,180,130,0.3)",
-            width: '100%',
-            height: '100%'
-          }}
-          onClick={() => {
-            if (!disabled && !isAnimating) {
-              setIsAnimating(true);
-              onRequestSpin?.();
-              setTimeout(() => setIsAnimating(false), 200); // Reset animation after 200ms
-            }
-          }}
-        />
-      </div>
 
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "min(350px, 75vw)", marginTop: "-20px", zIndex: 10 }}>
-        <div style={{ width: "85px", height: "22px", background: "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)" }} />
-        <div style={{ width: "100%", height: "14px", background: "linear-gradient(180deg, #f0dfc8 0%, #e0c9a8 100%)", borderRadius: "50% 50% 0 0 / 100% 100% 0 0", marginTop: "-1px" }} />
-        <div style={{ width: "100%", background: "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)", borderRadius: "0 0 20px 20px", padding: "16px 24px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-          <div style={{ fontFamily: "'Georgia', serif", fontSize: "clamp(14px, 4vw, 18px)", fontWeight: 700, letterSpacing: "0.2em", color: "#6a4020", textAlign: "center" }}>
-            {spinStatus.includes("YOU WON 500 DH!") ? "YOU WON 500 DH!" : spinStatus}
+        {/* Decorative Holder - now responsive and attached to wheel */}
+        <div 
+          className="flex flex-col items-center"
+          style={{ 
+            width: holderWidth,
+            marginTop: `-${dimensions.width * 0.04}px`,
+            zIndex: 10 
+          }}
+        >
+          {/* Top knob */}
+          <div 
+            style={{ 
+              width: topKnobWidth, 
+              height: dimensions.width * 0.044,
+              background: "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
+              clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)" 
+            }} 
+          />
+          
+          {/* Upper curved connector */}
+          <div 
+            style={{ 
+              width: "100%", 
+              height: dimensions.width * 0.028,
+              background: "linear-gradient(180deg, #f0dfc8 0%, #e0c9a8 100%)", 
+              borderRadius: "50% 50% 0 0 / 100% 100% 0 0", 
+              marginTop: "-1px" 
+            }} 
+          />
+          
+          {/* Main holder body with status text */}
+          <div 
+            style={{ 
+              width: "100%", 
+              background: "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)", 
+              borderRadius: isDesktop ? "0 0 24px 24px" : "0 0 16px 16px", 
+              padding: isDesktop 
+                ? `${dimensions.width * 0.04}px ${dimensions.width * 0.05}px ${dimensions.width * 0.045}px`
+                : `${dimensions.width * 0.03}px ${dimensions.width * 0.04}px ${dimensions.width * 0.035}px`,
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center", 
+              gap: isDesktop ? `${dimensions.width * 0.018}px` : `${dimensions.width * 0.014}px`
+            }}
+          >
+            <div 
+              style={{ 
+                fontFamily: "'Georgia', serif", 
+                fontSize: isDesktop 
+                  ? `clamp(16px, ${dimensions.width * 0.04}px, 20px)`
+                  : `clamp(11px, ${dimensions.width * 0.032}px, 16px)`,
+                fontWeight: 700, 
+                letterSpacing: isDesktop ? "0.2em" : "0.15em", 
+                color: "#6a4020", 
+                textAlign: "center",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {spinStatus.includes("YOU WON 500 DH!") ? "YOU WON 500 DH!" : spinStatus}
+            </div>
+            
+            <div style={{ display: "flex", alignItems: "center", gap: isDesktop ? "12px" : "8px", width: "100%" }}>
+              <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
+              <span style={{ color: "#b09070", fontSize: isDesktop ? "14px" : "10px" }}>✦</span>
+              <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
+            </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", width: "100%" }}>
-            <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
-            <span style={{ color: "#b09070", fontSize: "12px" }}>✦</span>
-            <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
-          </div>
+          
+          {/* Bottom curved base */}
+          <div 
+            style={{ 
+              width: bottomKnobWidth, 
+              height: dimensions.width * 0.022,
+              background: "linear-gradient(180deg, #c8a888 0%, #b09070 100%)", 
+              borderRadius: "0 0 40% 40% / 0 0 100% 100%", 
+              marginTop: "-1px" 
+            }} 
+          />
         </div>
-        <div style={{ width: "85%", height: "12px", background: "linear-gradient(180deg, #c8a888 0%, #b09070 100%)", borderRadius: "0 0 40% 40% / 0 0 100% 100%", marginTop: "-1px" }} />
       </div>
     </div>
   );
