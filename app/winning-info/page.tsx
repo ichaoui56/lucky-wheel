@@ -1,3 +1,4 @@
+// app/winning-info/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,6 +11,7 @@ export default function WinningInfoPage() {
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Tunisian cities list
   const tunisianCities = [
@@ -20,6 +22,7 @@ export default function WinningInfoPage() {
   ];
 
   useEffect(() => {
+    setMounted(true);
     // If already submitted info and not completed shares, redirect to share page
     const userInfo = localStorage.getItem('userInfo');
     const shareCompleted = localStorage.getItem('shareCompleted');
@@ -55,6 +58,20 @@ export default function WinningInfoPage() {
     router.push('/share-required');
     setIsSubmitting(false);
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-[#f7f2ed]">
+        <Header />
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <div className="text-4xl mb-4 animate-spin">⏳</div>
+            <p className="text-gray-500">جاري التحميل...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#f7f2ed]">

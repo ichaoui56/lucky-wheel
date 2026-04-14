@@ -1,3 +1,4 @@
+// app/waiting-list/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -9,8 +10,12 @@ export default function WaitingListPage() {
   const router = useRouter();
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    
     // Verify that share step is completed
     const shareCompleted = localStorage.getItem('shareCompleted');
     if (shareCompleted !== 'true') {
@@ -24,7 +29,6 @@ export default function WaitingListPage() {
       return;
     }
 
-    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     setShowConfetti(true);
     const timer = setTimeout(() => setShowConfetti(false), 8000);
     return () => clearTimeout(timer);
@@ -34,6 +38,20 @@ export default function WaitingListPage() {
   const position = 97;
   const totalParticipants = 100;
   const drawDays = 5;
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-[#f7f2ed]">
+        <Header />
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <div className="text-4xl mb-4 animate-spin">⏳</div>
+            <p className="text-gray-500">جاري التحميل...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#f7f2ed]">

@@ -1,3 +1,4 @@
+// app/share-required/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -9,35 +10,39 @@ export default function ShareRequiredPage() {
   const [remaining, setRemaining] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
+  const [baseUrl, setBaseUrl] = useState<string>('');
 
   const shareMessages = {
     1: `🔥 بنات شوفو هاللعبة!
 أنا جربتها وربحت قسيمة من SHEIN 😍🔥
 قالولي لازم نشاركها مع صحابي باش نأكد الجائزة، جربو حظكم زادة 👇
 
-${window.location.origin}`,
+${baseUrl}`,
     
     2: `🚨 عرض محدود للبنات في تونس!
 دوّر الدولاب واربح قسائم SHEIN حتى 50 دينار 💳✨
 أنا قريب ربحت 😱
 سارعو قبل ما تسكّر 👇
 
-${window.location.origin}`,
+${baseUrl}`,
     
     3: `😱 ما نصدقش اللي صارلي!
 جربت لعبة بالصدفة وربحت قسيمة من SHEIN 😍
 لازمكم تشوفوها بنفسكم 👇
 
-${window.location.origin}`,
+${baseUrl}`,
     
     4: `🎁 لعبة SHEIN في تونس توّا!
 دوّر الدولاب وربح هدايا وقسائم 💖
 أنا نلعب فيها توّا 😍👇
 
-${window.location.origin}`
+${baseUrl}`
   };
 
   useEffect(() => {
+    // Set base URL after component mounts (client-side only)
+    setBaseUrl(window.location.origin);
+    
     // Check if user info exists
     const userInfo = localStorage.getItem('userInfo');
     if (!userInfo) {
@@ -82,7 +87,12 @@ ${window.location.origin}`
     return (
       <main className="min-h-screen bg-[#f7f2ed]">
         <Header />
-        <div className="flex justify-center items-center h-64">Loading...</div>
+        <div className="flex justify-center items-center h-64">
+          <div className="text-center">
+            <div className="text-4xl mb-4 animate-spin">⏳</div>
+            <p className="text-gray-500">جاري التحميل...</p>
+          </div>
+        </div>
       </main>
     );
   }
@@ -194,7 +204,7 @@ ${window.location.origin}`
           <div className="mt-6 p-3 bg-amber-50 rounded-lg border border-amber-200">
             <p className="text-xs text-amber-800 text-center">
               💡 نصيحة: اختاري الرسالة اللي تناسب صديقاتك عشان تزيدي فرصة الفوز! 
-              كل مشاركة توصل تحسبلك自动اً.
+              كل مشاركة توصل تحسبلك تلقائياً.
             </p>
           </div>
 
