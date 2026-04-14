@@ -8,6 +8,34 @@ export default function ShareRequiredPage() {
   const router = useRouter();
   const [remaining, setRemaining] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedVariant, setSelectedVariant] = useState<number>(1);
+
+  const shareMessages = {
+    1: `🔥 بنات شوفو هاللعبة!
+أنا جربتها وربحت قسيمة من SHEIN 😍🔥
+قالولي لازم نشاركها مع صحابي باش نأكد الجائزة، جربو حظكم زادة 👇
+
+${window.location.origin}`,
+    
+    2: `🚨 عرض محدود للبنات في تونس!
+دوّر الدولاب واربح قسائم SHEIN حتى 50 دينار 💳✨
+أنا قريب ربحت 😱
+سارعو قبل ما تسكّر 👇
+
+${window.location.origin}`,
+    
+    3: `😱 ما نصدقش اللي صارلي!
+جربت لعبة بالصدفة وربحت قسيمة من SHEIN 😍
+لازمكم تشوفوها بنفسكم 👇
+
+${window.location.origin}`,
+    
+    4: `🎁 لعبة SHEIN في تونس توّا!
+دوّر الدولاب وربح هدايا وقسائم 💖
+أنا نلعب فيها توّا 😍👇
+
+${window.location.origin}`
+  };
 
   useEffect(() => {
     // Check if user info exists
@@ -24,8 +52,8 @@ export default function ShareRequiredPage() {
     }
     // Load remaining count
     const storedRemaining = localStorage.getItem('shareRemaining');
-    let initial = storedRemaining ? parseInt(storedRemaining, 10) : 20;
-    if (isNaN(initial) || initial < 0) initial = 20;
+    let initial = storedRemaining ? parseInt(storedRemaining, 10) : 10;
+    if (isNaN(initial) || initial < 0) initial = 10;
     setRemaining(initial);
     setIsLoading(false);
   }, [router]);
@@ -33,8 +61,8 @@ export default function ShareRequiredPage() {
   const handleShare = () => {
     if (remaining === null || remaining <= 0) return;
 
-    // Prepare WhatsApp message with site link
-    const message = `I just won 500DH on this amazing contest! 🎁 Join and try your luck: ${window.location.origin}`;
+    // Get selected message variant
+    const message = shareMessages[selectedVariant as keyof typeof shareMessages];
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
 
@@ -63,26 +91,121 @@ export default function ShareRequiredPage() {
     <main className="min-h-screen bg-[#f7f2ed]">
       <Header />
       <div className="flex mt-28 flex-col items-center justify-center px-4 py-12 max-w-7xl mx-auto">
-        <div className="w-full max-w-lg  bg-[#f7f2ed] rounded-2xl shadow-xl p-8 text-center">
-          <div className="text-6xl mb-4">📱</div>
-          <h1 className="text-3xl font-bold text-[#6a4020] mb-2">Share to Confirm!</h1>
-          <p className="text-gray-600 mb-4">
-            To secure your 500 DH prize, you must share this contest with <strong>20 friends</strong> on WhatsApp.
-          </p>
-          <div className="bg-amber-50 rounded-xl p-4 mb-6">
-            <p className="text-2xl font-bold text-[#c9a96e]">{remaining}</p>
-            <p className="text-sm text-gray-500">shares remaining</p>
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-6">
+            <div className="text-6xl mb-4">📱</div>
+            <h1 className="text-3xl font-bold text-[#6a4020] mb-2">شاركي لتأكيد الجائزة!</h1>
+            <p className="text-gray-600">
+              لتأكيد جائزتك 500 دينار، شاركي اللعبة مع <strong>10 صديقات</strong> على واتساب
+            </p>
           </div>
+
+          {/* Progress Bar */}
+          <div className="mb-6">
+            <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <span>تقدم المشاركة</span>
+              <span className="font-bold text-[#c9a96e]">{remaining}/10 مشاركة</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div 
+                className="bg-gradient-to-r from-[#c9a96e] to-[#b8925a] h-3 rounded-full transition-all duration-500"
+                style={{ width: `${remaining !== null ? ((10 - remaining) / 10) * 100 : 0}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Message Variants Selection */}
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-[#6a4020] mb-3">
+              اختاري طريقة المشاركة:
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <button
+                onClick={() => setSelectedVariant(1)}
+                className={`p-3 rounded-xl text-right transition-all ${
+                  selectedVariant === 1 
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                    : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
+                }`}
+              >
+                <div className="font-bold text-sm mb-1">🔥 طبيعي وفعّال</div>
+                <p className="text-xs text-gray-600 line-clamp-2">بنات شوفو هاللعبة! أنا جربتها وربحت...</p>
+              </button>
+              
+              <button
+                onClick={() => setSelectedVariant(2)}
+                className={`p-3 rounded-xl text-right transition-all ${
+                  selectedVariant === 2 
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                    : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
+                }`}
+              >
+                <div className="font-bold text-sm mb-1">⚡ عرض محدود + استعجال</div>
+                <p className="text-xs text-gray-600 line-clamp-2">🚨 عرض محدود للبنات في تونس! دوّر الدولاب...</p>
+              </button>
+              
+              <button
+                onClick={() => setSelectedVariant(3)}
+                className={`p-3 rounded-xl text-right transition-all ${
+                  selectedVariant === 3 
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                    : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
+                }`}
+              >
+                <div className="font-bold text-sm mb-1">💣 فضول قوي</div>
+                <p className="text-xs text-gray-600 line-clamp-2">😱 ما نصدقش اللي صارلي! جربت لعبة بالصدفة...</p>
+              </button>
+              
+              <button
+                onClick={() => setSelectedVariant(4)}
+                className={`p-3 rounded-xl text-right transition-all ${
+                  selectedVariant === 4 
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                    : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
+                }`}
+              >
+                <div className="font-bold text-sm mb-1">🎯 مباشر + فيروسي</div>
+                <p className="text-xs text-gray-600 line-clamp-2">🎁 لعبة SHEIN في تونس توّا! دوّر الدولاب...</p>
+              </button>
+            </div>
+          </div>
+
+          {/* Preview Message */}
+          <div className="bg-green-50 rounded-xl p-4 mb-6 border border-green-200">
+            <p className="text-xs text-green-700 mb-2 font-semibold">📱 معاينة الرسالة:</p>
+            <p className="text-sm text-gray-700 whitespace-pre-line">
+              {shareMessages[selectedVariant as keyof typeof shareMessages]}
+            </p>
+          </div>
+
+          {/* Share Button */}
           <button
             onClick={handleShare}
             disabled={remaining === 0}
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition text-lg shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 rounded-xl transition text-lg shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span>📤</span> Share on WhatsApp
+            <span>📤</span> شاركي على واتساب
+            <span className="text-sm bg-white/20 px-2 py-0.5 rounded-full">
+              {remaining} متبقي
+            </span>
           </button>
-          <p className="text-xs text-gray-400 mt-6">
-            Each click opens WhatsApp. After sending the message, return here – your count will update automatically.
-          </p>
+
+          {/* Info Message */}
+          <div className="mt-6 p-3 bg-amber-50 rounded-lg border border-amber-200">
+            <p className="text-xs text-amber-800 text-center">
+              💡 نصيحة: اختاري الرسالة اللي تناسب صديقاتك عشان تزيدي فرصة الفوز! 
+              كل مشاركة توصل تحسبلك自动اً.
+            </p>
+          </div>
+
+          {/* Success Message when completed */}
+          {remaining === 0 && (
+            <div className="mt-4 p-3 bg-green-100 rounded-lg border border-green-300 animate-pulse">
+              <p className="text-sm text-green-700 text-center font-semibold">
+                ✅ مبروك! كمّلتي المشاركات. جاري تحويلك...
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </main>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import TestimonialCarousel from '@/components/TestimonialCarousel';
+import ArticlesCarousel from '@/components/ArticlesCarousel';
 import SpinningWheel, { SpinningWheelHandle } from '@/components/SpinningWheel';
 import Confetti from 'react-confetti';
 import { useRouter } from 'next/navigation';
@@ -20,7 +21,7 @@ const FullScreenModal = ({ isOpen, onClose, children }: { isOpen: boolean; onClo
       <div className="bg-[#f7f2ed] rounded-2xl shadow-2xl max-w-lg w-full mx-4 p-6 transform transition-all animate-scaleIn relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
+          className="absolute top-4 left-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
         >
           &times;
         </button>
@@ -36,7 +37,6 @@ export default function Home() {
   const wheelRef = useRef<SpinningWheelHandle>(null);
 
   const [spinCount, setSpinCount] = useState<number>(0);
-  // useRef for synchronous tracking — useState is async and stale inside callbacks
   const spinCountRef = useRef<number>(0);
 
   const [hasWon, setHasWon] = useState<boolean>(false);
@@ -69,45 +69,37 @@ export default function Home() {
   const canSpin = !isSpinning && !hasWon && spinCountRef.current < 2;
 
   const getSpinStatus = () => {
-    if (hasWon) return "YOU WON 500 DH!";
-    if (spinCountRef.current >= 2) return "SPINS COMPLETED";
-    if (spinCountRef.current === 1) return "LAST CHANCE!";
-    return "SPIN TO WIN";
+    if (hasWon) return "لقد ربحت 500 دينار!";
+    if (spinCountRef.current >= 2) return "اكتملت المحاولات";
+    if (spinCountRef.current === 1) return "الفرصة الأخيرة!";
+    return "دوري لتربحي";
   };
 
   const handleRequestSpin = () => {
     if (!canSpin) return;
 
     if (spinCountRef.current === 0) {
-      // First spin → MUST land on "text-2" = "Another Chance!"
       console.log('[Page] First spin → targeting text-2 (Another Chance!)');
-      wheelRef.current?.spin("text-2", 5);
+      wheelRef.current?.spin("text-2", 10);
       spinCountRef.current = 1;
       setSpinCount(1);
       setIsSpinning(true);
     } else if (spinCountRef.current === 1) {
-      // Second spin → MUST land on "text-10" = "500DH Card"
       console.log('[Page] Second spin → targeting text-10 (500DH Card)');
-      wheelRef.current?.spin("text-10", 5);
+      wheelRef.current?.spin("text-10", 10);
       spinCountRef.current = 2;
       setSpinCount(2);
       setIsSpinning(true);
     }
   };
 
-  /**
-   * spinCountRef.current is already updated synchronously in handleRequestSpin
-   * before this callback ever fires, so we can read it reliably here.
-   */
   const handleSpinEnd = (_segment: any) => {
     setIsSpinning(false);
     console.log('[Page] handleSpinEnd — spinCountRef.current =', spinCountRef.current);
 
     if (spinCountRef.current === 1) {
-      // First spin just finished → show "another chance" modal
       setShowSecondChanceModal(true);
     } else if (spinCountRef.current === 2) {
-      // Second spin just finished → show win
       setHasWon(true);
       setShowWinModal(true);
       setShowConfetti(true);
@@ -125,7 +117,7 @@ export default function Home() {
         <HeroSection />
         <div className="flex flex-col items-center justify-center px-4 py-8 max-w-7xl mx-auto">
           <div className="w-full max-w-4xl">
-            <SpinningWheel ref={wheelRef} spinStatus="LOADING..." />
+            <SpinningWheel ref={wheelRef} spinStatus="جاري التحميل..." />
           </div>
           <TestimonialCarousel />
         </div>
@@ -136,73 +128,139 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f2ed]">
       <Header />
-      <HeroSection />
-      <div className="flex flex-col items-center justify-center px-4 py-8 max-w-7xl mx-auto">
-        <div className="w-full max-w-4xl mx-auto animate-slide-up">
+      
+      {/* Full width hero section */}
+      <div className="w-full">
+        <HeroSection />
+      </div>
+      
+      {/* Main content with cards */}
+      <div className="flex flex-col items-center justify-center px-4 py-12 max-w-7xl mx-auto">
+        
+        {/* Stats Cards Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 w-full">
+          <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
+            <div className="text-3xl mb-2">🎰</div>
+            <div className="text-2xl font-bold text-gold-dark">{spinCount}/2</div>
+            <p className="text-xs text-charcoal/60">عدد المحاولات</p>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
+            <div className="text-3xl mb-2">🏆</div>
+            <div className="text-2xl font-bold text-gold-dark">500 د</div>
+            <p className="text-xs text-charcoal/60">الحد الأقصى للجائزة</p>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
+            <div className="text-3xl mb-2">👭</div>
+            <div className="text-2xl font-bold text-gold-dark">3,482+</div>
+            <p className="text-xs text-charcoal/60">بنت لعبت اليوم</p>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
+            <div className="text-3xl mb-2">🎁</div>
+            <div className="text-2xl font-bold text-gold-dark">يوميًا</div>
+            <p className="text-xs text-charcoal/60">جوائز محدثة</p>
+          </div>
+        </div>
+
+        {/* Wheel Card */}
+        <div id="wheel-section" className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-12 border border-beige">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-charcoal">🎡 عجلة الحظ</h2>
+            <p className="text-charcoal/60 mt-1">دوري واربحي جوائز رائعة</p>
+            <div className="w-20 h-0.5 bg-gold-dark mx-auto mt-3"></div>
+          </div>
           <SpinningWheel
             ref={wheelRef}
             disabled={!canSpin}
             onRequestSpin={handleRequestSpin}
             onSpinEnd={handleSpinEnd}
             spinStatus={getSpinStatus()}
-            hasWon={hasWon} // Add this prop
+            hasWon={hasWon}
           />
         </div>
-        <div className='bg-cream'>
+
+        {/* Testimonials Card */}
+        <div className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-12 border border-beige">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-charcoal">💬 آراء البنات</h2>
+            <p className="text-charcoal/60 mt-1">شوفي اللي ربحوا قبلček</p>
+            <div className="w-20 h-0.5 bg-gold-dark mx-auto mt-3"></div>
+          </div>
           <TestimonialCarousel />
         </div>
 
+        {/* Articles Section - New */}
+        <div className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-beige">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-charcoal">📚 مقالات SHEIN تونس</h2>
+            <p className="text-charcoal/60 mt-1">أحدث النصائح والدليلات لتسوق أذكى</p>
+            <div className="w-20 h-0.5 bg-gold-dark mx-auto mt-3"></div>
+          </div>
+          <ArticlesCarousel />
+        </div>
       </div>
 
-      {/* Modal: Another Chance */}
+      {/* Modal: فرصة أخرى */}
       <FullScreenModal isOpen={showSecondChanceModal} onClose={closeSecondChanceModal}>
-        <div className="text-center">
+        <div className="text-center" dir="rtl">
           <div style={{ fontSize: 64, lineHeight: 1.2, marginBottom: 12 }}>🎯</div>
-          <h2 className="text-3xl font-bold text-[#6a4020] mb-2">You have another chance!</h2>
-          <p className="text-gray-600 mb-1">The wheel is on your side.</p>
+          <h2 className="text-3xl font-bold text-[#6a4020] mb-2">لديك فرصة أخرى!</h2>
+          <p className="text-gray-600 mb-1">العجلة في صفك.</p>
           <p className="text-gray-700 font-semibold mb-6">
-            Spin again to win <span className="text-green-600 font-bold">500 DH</span>!
+            دورة مرة أخرى لتربحي <span className="text-green-600 font-bold">500 دينار</span>!
           </p>
           <button
             onClick={closeSecondChanceModal}
             className="bg-gradient-to-r from-[#c9a96e] to-[#b8925a] hover:from-[#b8925a] hover:to-[#a07840] text-white font-bold py-3 px-8 rounded-full transition text-lg shadow-md"
           >
-            🎁 Spin Again!
+            🎁 دورة مرة أخرى!
           </button>
         </div>
       </FullScreenModal>
 
-      {/* Modal: Win */}
+      {/* Modal: ربحت الجائزة */}
       <FullScreenModal isOpen={showWinModal} onClose={closeWinModal}>
-        <div className="text-center relative overflow-hidden">
-          <div style={{ fontSize: 52, lineHeight: 1, marginBottom: 4, letterSpacing: 4 }}>🔥🎂🔥</div>
-          <div style={{ fontSize: 36, lineHeight: 1, marginBottom: 16, letterSpacing: 6 }}>🎉✨🎊✨🎉</div>
-          <h2 className="text-4xl font-bold text-[#6a4020] mb-1">You Won!</h2>
-          <p className="text-lg text-gray-600 mb-2">Congratulations, you are our lucky winner!</p>
-          <div className="bg-gradient-to-r from-yellow-50 to-green-50 border-2 border-green-400 rounded-2xl py-4 px-6 mb-4 inline-block">
-            <p className="text-4xl font-bold text-green-600">🏆 500 DH</p>
-            <p className="text-sm text-gray-500 mt-1">Gift Card Prize</p>
+        <div className="text-center relative overflow-hidden" dir="rtl">
+          <div style={{ fontSize: 52, lineHeight: 1, marginBottom: 4, letterSpacing: 4 }}>🎉✨🎊</div>
+          
+          <h2 className="text-4xl font-bold text-[#6a4020] mb-2">🎉 مبروك! ربحت قسيمة SHEIN 🎁</h2>
+          
+          <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-gold-dark rounded-2xl py-4 px-6 mb-4 inline-block">
+            <p className="text-4xl font-bold text-gold-dark">🏆 500 دينار</p>
+            <p className="text-sm text-gray-500 mt-1">بطاقة هدية SHEIN</p>
           </div>
-          <div style={{ fontSize: 28, marginBottom: 16, letterSpacing: 4 }}>🎈🎆🎇🎈</div>
+          
+          <div className="bg-amber-50 border-r-4 border-amber-500 rounded-lg p-4 my-4 text-right">
+            <p className="text-amber-700 font-bold text-lg mb-2">⚠️ لتأكيد الجائزة:</p>
+            <p className="text-gray-800 text-md">
+              شاركي اللعبة مع <span className="font-bold text-gold-dark">10 من صديقاتك</span> على واتساب 👇
+            </p>
+          </div>
+          
+          <div style={{ fontSize: 28, marginBottom: 16, letterSpacing: 4 }}>💝💕💖</div>
+          
           <button
             onClick={() => {
               closeWinModal();
               router.push('/winning-info');
             }}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-10 rounded-full transition text-lg shadow-lg"
+            className="bg-gradient-to-r from-gold-dark to-[#b8925a] hover:from-[#b8925a] hover:to-[#a07840] text-white font-bold py-3 px-10 rounded-full transition text-lg shadow-lg"
           >
-            🎁 Claim My 500 DH Prize!
+            🎁 تأكيد جائزتي 500 دينار!
           </button>
         </div>
       </FullScreenModal>
 
       {showConfetti && (
         <Confetti
-          width={window.innerWidth}
-          height={window.innerHeight}
+          width={typeof window !== 'undefined' ? window.innerWidth : 0}
+          height={typeof window !== 'undefined' ? window.innerHeight : 0}
           recycle={false}
           numberOfPieces={500}
           gravity={0.25}
+          colors={['#c9a96e', '#b8925a', '#a07840', '#8b7355', '#d4b898']}
         />
       )}
     </main>

@@ -22,7 +22,7 @@ interface SpinningWheelProps {
   disabled?: boolean;
   onRequestSpin?: () => void;
   spinStatus?: string;
-  hasWon?: boolean; // Add prop to know if user has already won
+  hasWon?: boolean;
 }
 
 export interface SpinningWheelHandle {
@@ -31,16 +31,9 @@ export interface SpinningWheelHandle {
 
 // Responsive segment generator that scales based on wheel size
 const generateResponsiveSegments = (wheelSize: number): Segment[] => {
-  // Scale factor based on wheel size (base size is 500px)
   const scaleFactor = wheelSize / 500;
-  
-  // Helper to scale margin from center
   const scaleMargin = (baseMargin: number) => baseMargin * scaleFactor;
-  
-  // Helper to scale image size
   const scaleImageSize = (baseSize: number) => baseSize * scaleFactor;
-  
-  // Helper to scale text container dimensions
   const scaleTextContainer = (baseWidth: number, baseHeight: number) => ({
     width: baseWidth * scaleFactor,
     height: baseHeight * scaleFactor
@@ -49,7 +42,7 @@ const generateResponsiveSegments = (wheelSize: number): Segment[] => {
   return [
     { 
       id: "prod-1", 
-      label: "Product 1", 
+      label: "منتج 1", 
       color: "#2c2c2c", 
       type: 'image', 
       rotation: 0, 
@@ -58,17 +51,17 @@ const generateResponsiveSegments = (wheelSize: number): Segment[] => {
     },
     { 
       id: "text-2", 
-      label: "Another Chance", 
+      label: "فرصة أخرى", 
       color: "#7a4f3a", 
       type: 'text', 
-      textContent: "Another Chance!", 
+      textContent: "فرصة أخرى", 
       rotation: 90, 
       marginFromCenter: scaleMargin(130), 
       textContainerSize: scaleTextContainer(130, 35)
     },
     { 
       id: "prod-3", 
-      label: "Product 3", 
+      label: "منتج 3", 
       color: "#3a5a7a", 
       type: 'image', 
       rotation: 0, 
@@ -77,17 +70,17 @@ const generateResponsiveSegments = (wheelSize: number): Segment[] => {
     },
     { 
       id: "text-4", 
-      label: "200DH Card", 
+      label: "بطاقة 200 د", 
       color: "#4a7a3a", 
       type: 'text', 
-      textContent: "200DH Card", 
+      textContent: "200 دينار", 
       rotation: 90, 
       marginFromCenter: scaleMargin(120), 
-      textContainerSize: scaleTextContainer(100, 35)
+      textContainerSize: scaleTextContainer(110, 35)
     },
     { 
       id: "prod-5", 
-      label: "Product 5", 
+      label: "منتج 5", 
       color: "#7a3a5a", 
       type: 'image', 
       rotation: 0, 
@@ -96,17 +89,17 @@ const generateResponsiveSegments = (wheelSize: number): Segment[] => {
     },
     { 
       id: "text-6", 
-      label: "Another Chance", 
+      label: "فرصة أخرى", 
       color: "#5a3a7a", 
       type: 'text', 
-      textContent: "Another Chance!", 
+      textContent: "فرصة أخرى", 
       rotation: 90, 
       marginFromCenter: scaleMargin(130), 
       textContainerSize: scaleTextContainer(130, 35)
     },
     { 
       id: "prod-7", 
-      label: "Product 7", 
+      label: "منتج 7", 
       color: "#7a6a3a", 
       type: 'image', 
       rotation: 0, 
@@ -115,17 +108,17 @@ const generateResponsiveSegments = (wheelSize: number): Segment[] => {
     },
     { 
       id: "text-8", 
-      label: "200DH Card", 
+      label: "بطاقة 200 د", 
       color: "#3a6a6a", 
       type: 'text', 
-      textContent: "200DH Card", 
+      textContent: "200 دينار", 
       rotation: 90, 
       marginFromCenter: scaleMargin(120), 
-      textContainerSize: scaleTextContainer(105, 36)
+      textContainerSize: scaleTextContainer(110, 36)
     },
     { 
       id: "prod-9", 
-      label: "Product 9", 
+      label: "منتج 9", 
       color: "#6a3a7a", 
       type: 'image', 
       rotation: 0, 
@@ -134,22 +127,21 @@ const generateResponsiveSegments = (wheelSize: number): Segment[] => {
     },
     { 
       id: "text-10", 
-      label: "500DH Card", 
+      label: "بطاقة 500 د", 
       color: "#7a3a3a", 
       type: 'text', 
-      textContent: "500DH Card", 
+      textContent: "500 دينار", 
       rotation: 90, 
       marginFromCenter: scaleMargin(130), 
-      textContainerSize: scaleTextContainer(115, 42)
+      textContainerSize: scaleTextContainer(120, 42)
     },
   ];
 };
 
-// Default segments for initial render (will be replaced when dimensions are known)
 const DEFAULT_SEGMENTS = generateResponsiveSegments(500);
 
-// Ease out - slow end
-const easeOutQuart = (t: number): number => 1 - Math.pow(1 - t, 4);
+// Smooth ease-out-cubic for natural stopping
+const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
 
 const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   segments: externalSegments,
@@ -157,7 +149,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   onSpinStart,
   disabled = false,
   onRequestSpin,
-  spinStatus = "ONE SHOT",
+  spinStatus = "دورة واحدة",
   hasWon = false,
 }, ref) => {
   const router = useRouter();
@@ -165,22 +157,19 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
   const spinningRef = useRef(false);
-  const rotationRef = useRef(0); // current wheel rotation in radians
+  const rotationRef = useRef(0);
   const imageCacheRef = useRef<(HTMLImageElement | null)[]>([]);
   const imagesLoadedRef = useRef<boolean[]>([]);
   const [dimensions, setDimensions] = useState({ width: 500, height: 500 });
   const [imagesReady, setImagesReady] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   
-  // Use responsive segments based on wheel size, or external segments if provided
   const segments = externalSegments || generateResponsiveSegments(dimensions.width);
 
   const N = segments.length;
-  const STEP = (Math.PI * 2) / N; // angle per segment
+  const STEP = (Math.PI * 2) / N;
   const FILLS = ["#FCF6ED", "#F4ECDE"];
   const STROKE = "#DCCB9E";
-
-  // The pointer sits at the TOP of the wheel = angle -π/2 in canvas coords
   const POINTER_ANGLE = -Math.PI / 2;
 
   // Preload images
@@ -193,8 +182,14 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
           const imageUrl = `/products/product-${i + 1}.jpg`;
           img.src = imageUrl;
           const promise = new Promise<void>((resolve) => {
-            img.onload = () => { imagesLoadedRef.current[i] = true; resolve(); };
-            img.onerror = () => { imagesLoadedRef.current[i] = false; resolve(); };
+            img.onload = () => { 
+              imagesLoadedRef.current[i] = true; 
+              resolve(); 
+            };
+            img.onerror = () => { 
+              imagesLoadedRef.current[i] = false; 
+              resolve(); 
+            };
           });
           imagePromises.push(promise);
           imageCacheRef.current[i] = img;
@@ -217,7 +212,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     ctx.fillStyle = fill;
     ctx.fill();
     ctx.strokeStyle = STROKE;
-    ctx.lineWidth = Math.max(1, dimensions.width * 0.0024); // Responsive stroke width
+    ctx.lineWidth = Math.max(1, dimensions.width * 0.0024);
     ctx.stroke();
     ctx.restore();
   };
@@ -239,7 +234,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     const fontSize = textContainerSize?.height 
       ? Math.min(textContainerSize.height * 0.4, dimensions.width * 0.04) 
       : Math.max(radius * 0.09, dimensions.width * 0.028);
-    ctx.font = `bold ${fontSize}px "Georgia", serif`;
+    ctx.font = `bold ${fontSize}px "Cairo", "Tajawal", "Georgia", serif`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     const lines = text.split('\n');
@@ -296,7 +291,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     ctx.rotate(imageAngle);
     const img = imageCacheRef.current[segmentIndex];
     const imageLoaded = img && img.complete && img.naturalWidth > 0;
-    if (imageLoaded && imagesReady) {
+    
+    // Only draw image if it's loaded successfully
+    if (imageLoaded && imagesReady && imagesLoadedRef.current[segmentIndex]) {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       const targetSize = size * 1.6;
@@ -307,12 +304,9 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
       ctx.shadowBlur = Math.max(4, dimensions.width * 0.01);
       ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
       ctx.shadowColor = "transparent";
-    } else {
-      ctx.beginPath();
-      ctx.arc(0, 0, size * 0.7, 0, Math.PI * 2);
-      ctx.fillStyle = fallbackColor;
-      ctx.fill();
     }
+    // Removed the colored circle fallback - now draws nothing if image is missing
+    
     ctx.restore();
   };
 
@@ -389,8 +383,12 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
     drawHub(ctx, cx, cy, radius);
   }, [dimensions, N, STEP, segments, imagesReady]);
 
-  const spinToSegmentId = useCallback((targetId: string, minRotations: number = 5) => {
-    if (spinningRef.current) return;
+  const spinToSegmentId = useCallback((targetId: string, minRotations: number = 12) => {
+    // Prevent spinning while already spinning
+    if (spinningRef.current) {
+      console.log('[Wheel] Already spinning, ignoring request');
+      return;
+    }
 
     const targetIndex = segments.findIndex(seg => seg.id === targetId);
     if (targetIndex === -1) {
@@ -398,42 +396,74 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
       return;
     }
 
+    console.log('[Wheel] Starting spin to target:', targetId);
     spinningRef.current = true;
     onSpinStart?.();
 
-    const midAngleLocal = targetIndex * STEP + STEP / 2;
-    const R_final_base = ((POINTER_ANGLE - midAngleLocal) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-    const R_current = ((rotationRef.current % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-    let delta = R_final_base - R_current;
+    // Calculate the exact angle needed for the target segment to align with pointer
+    const targetMidAngle = targetIndex * STEP + STEP / 2;
+    
+    // Calculate the final rotation needed so that targetMidAngle aligns with POINTER_ANGLE
+    // We need: (targetMidAngle + finalRotation) % (2π) = POINTER_ANGLE
+    // Therefore: finalRotation = (POINTER_ANGLE - targetMidAngle) mod (2π)
+    let targetRotation = POINTER_ANGLE - targetMidAngle;
+    targetRotation = ((targetRotation % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    
+    // Get current rotation modulo 2π
+    const currentRotationMod = ((rotationRef.current % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    
+    // Calculate delta needed to reach target
+    let delta = targetRotation - currentRotationMod;
     if (delta <= 0) delta += Math.PI * 2;
-    if (delta < 0.01) delta += Math.PI * 2;
-
-    const extraFullRotations = minRotations * Math.PI * 2;
-    const totalDelta = extraFullRotations + delta;
-    const startRot = rotationRef.current;
-    const endRot = startRot + totalDelta;
-    const duration = 5500;
+    
+    // Add extra full rotations for the spinning effect (12-15 rotations)
+    const extraRotations = (minRotations || 12) * Math.PI * 2;
+    const totalDelta = extraRotations + delta;
+    
+    const startRotation = rotationRef.current;
+    const endRotation = startRotation + totalDelta;
+    const duration = 8000; // 8 seconds of smooth spinning
     const startTime = performance.now();
+
+    console.log('[Wheel] Spin params:', { 
+      extraRotations: minRotations, 
+      delta: delta * 180 / Math.PI, 
+      duration 
+    });
 
     const animateFrame = (now: number) => {
       const elapsed = now - startTime;
       const t = Math.min(elapsed / duration, 1);
-      const eased = easeOutQuart(t);
-      rotationRef.current = startRot + eased * totalDelta;
+      
+      // Smooth ease-out for natural deceleration
+      const eased = easeOutCubic(t);
+      
+      // Update rotation
+      rotationRef.current = startRotation + eased * totalDelta;
       drawWheel();
 
       if (t < 1) {
         animationRef.current = requestAnimationFrame(animateFrame);
       } else {
-        rotationRef.current = endRot;
+        // Ensure exact final position
+        rotationRef.current = endRotation;
         drawWheel();
+        
+        // End of spin
         spinningRef.current = false;
         animationRef.current = null;
+        console.log('[Wheel] Spin completed at segment:', targetId);
         onSpinEnd?.(segments[targetIndex], targetIndex);
       }
     };
 
-    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    // Cancel any existing animation
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+    
+    // Start new animation
     animationRef.current = requestAnimationFrame(animateFrame);
   }, [segments, STEP, POINTER_ANGLE, drawWheel, onSpinEnd, onSpinStart]);
 
@@ -446,7 +476,6 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
       if (containerRef.current) {
         const parentWidth = containerRef.current.parentElement?.clientWidth || window.innerWidth;
         
-        // Different sizing strategies for mobile vs desktop
         const isMobile = window.innerWidth < 640;
         const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
         const isDesktop = window.innerWidth >= 1024;
@@ -454,15 +483,12 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
         let size: number;
         
         if (isMobile) {
-          // Mobile: Max 85% of parent width, capped at 400px
           const maxSize = Math.min(parentWidth - 32, 400);
           size = Math.min(maxSize, window.innerHeight * 0.45);
         } else if (isTablet) {
-          // Tablet: Max 80% of parent width, capped at 500px
           const maxSize = Math.min(parentWidth - 40, 500);
           size = Math.min(maxSize, window.innerHeight * 0.5);
         } else {
-          // Desktop: Fixed at 550px for optimal visibility
           size = 550;
         }
         
@@ -493,15 +519,17 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
   }, [imagesReady, drawWheel, segments]);
 
   useEffect(() => {
-    return () => { if (animationRef.current) cancelAnimationFrame(animationRef.current); };
+    return () => { 
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    };
   }, []);
 
-  // Calculate holder width based on wheel size
   const holderWidth = dimensions.width * 0.7;
   const topKnobWidth = dimensions.width * 0.17;
   const bottomKnobWidth = dimensions.width * 0.6;
-
-  // Determine if we're on desktop for additional spacing
   const isDesktop = dimensions.width >= 550;
 
   const handleClaimPrize = () => {
@@ -513,7 +541,6 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
       {/* Status Badge or Winner Button */}
       <div className={`text-center ${isDesktop ? 'mb-3' : 'mb-1 md:mb-2'}`}>
         {hasWon ? (
-          // Winner button that redirects to winning-info page
           <button
             onClick={handleClaimPrize}
             className="group relative inline-flex items-center gap-2 px-6 md:px-8 py-2.5 md:py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
@@ -533,7 +560,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
               />
             </svg>
             <span className="text-white font-bold text-sm md:text-base tracking-wider">
-              🎉 CLAIM YOUR 500 DH PRIZE!
+              🎉 استلم جائزتك 500 دينار!
             </span>
             <svg 
               className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform duration-300" 
@@ -550,7 +577,6 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
             </svg>
           </button>
         ) : (
-          // Regular status badge
           <div className={`inline-block ${isDesktop ? 'px-8 py-3' : 'px-4 md:px-6 py-1.5 md:py-2'} bg-gradient-to-r from-[#d4b898] to-[#c9a96e] rounded-full shadow-md`}>
             <span className={`text-white font-bold ${isDesktop ? 'text-base' : 'text-xs md:text-sm'} tracking-wider`}>
               {spinStatus}
@@ -573,7 +599,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
           className="relative mx-auto"
           style={{ width: dimensions.width, height: dimensions.height, zIndex: 20 }}
         >
-          {/* Pointer arrow at top - responsive sizing */}
+          {/* Pointer arrow at top */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 md:-translate-y-3 z-10">
             <div 
               className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[22px] sm:border-l-[15px] sm:border-r-[15px] sm:border-t-[28px] md:border-l-[20px] md:border-r-[20px] md:border-t-[36px] border-l-transparent border-r-transparent" 
@@ -591,7 +617,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
               height: '100%'
             }}
             onClick={() => {
-              if (!disabled && !hasWon && !isAnimating) {
+              if (!disabled && !hasWon && !isAnimating && !spinningRef.current) {
                 setIsAnimating(true);
                 onRequestSpin?.();
                 setTimeout(() => setIsAnimating(false), 200);
@@ -600,7 +626,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
           />
         </div>
 
-        {/* Decorative Holder - now responsive and attached to wheel */}
+        {/* Decorative Holder */}
         <div 
           className="flex flex-col items-center"
           style={{ 
@@ -614,9 +640,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
             style={{ 
               width: topKnobWidth, 
               height: dimensions.width * 0.044,
-              background: hasWon 
-                ? "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)" 
-                : "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
+              background: "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
               clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)" 
             }} 
           />
@@ -626,21 +650,17 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
             style={{ 
               width: "100%", 
               height: dimensions.width * 0.028,
-              background: hasWon 
-                ? "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)" 
-                : "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
+              background: "linear-gradient(180deg, #e8cdb0 0%, #d4b898 100%)", 
               borderRadius: "50% 50% 0 0 / 100% 100% 0 0", 
               marginTop: "-1px" 
             }} 
           />
           
-          {/* Main holder body with status text */}
+          {/* Main holder body */}
           <div 
             style={{ 
               width: "100%", 
-              background: hasWon 
-                ? "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)" 
-                : "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)", 
+              background: "linear-gradient(180deg, #eedec8 0%, #e8cdb0 40%, #d4b898 100%)", 
               borderRadius: isDesktop ? "0 0 24px 24px" : "0 0 16px 16px", 
               padding: isDesktop 
                 ? `${dimensions.width * 0.04}px ${dimensions.width * 0.05}px ${dimensions.width * 0.045}px`
@@ -659,20 +679,20 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
                   : `clamp(11px, ${dimensions.width * 0.032}px, 16px)`,
                 fontWeight: 700, 
                 letterSpacing: isDesktop ? "0.2em" : "0.15em", 
-                color: hasWon ? "#6a4020" : "#6a4020", 
+                color: "#6a4020", 
                 textAlign: "center",
                 whiteSpace: "nowrap"
               }}
             >
-              {hasWon ? "🎊 YOU WON! 🎊" : spinStatus.includes("YOU WON 500 DH!") ? "YOU WON 500 DH!" : spinStatus}
+              {hasWon ? "🎊 لقد ربحت! 🎊" : spinStatus}
             </div>
             
             <div style={{ display: "flex", alignItems: "center", gap: isDesktop ? "12px" : "8px", width: "100%" }}>
-              <div style={{ flex: 1, height: "1px", background: hasWon ? "rgba(6, 95, 70, 0.25)" : "rgba(140,80,20,0.25)" }} />
-              <span style={{ color: hasWon ? "#b09070" : "#b09070", fontSize: isDesktop ? "14px" : "10px" }}>
+              <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
+              <span style={{ color: "#b09070", fontSize: isDesktop ? "14px" : "10px" }}>
                 {hasWon ? "🏆" : "✦"}
               </span>
-              <div style={{ flex: 1, height: "1px", background: hasWon ? "rgba(140,80,20,0.25)" : "rgba(140,80,20,0.25)" }} />
+              <div style={{ flex: 1, height: "1px", background: "rgba(140,80,20,0.25)" }} />
             </div>
           </div>
           
@@ -681,9 +701,7 @@ const SpinningWheel = forwardRef<SpinningWheelHandle, SpinningWheelProps>(({
             style={{ 
               width: bottomKnobWidth, 
               height: dimensions.width * 0.022,
-              background: hasWon 
-                ? "linear-gradient(180deg, #c8a888 0%, #b09070 100%)" 
-                : "linear-gradient(180deg, #c8a888 0%, #b09070 100%)", 
+              background: "linear-gradient(180deg, #c8a888 0%, #b09070 100%)", 
               borderRadius: "0 0 40% 40% / 0 0 100% 100%", 
               marginTop: "-1px" 
             }} 

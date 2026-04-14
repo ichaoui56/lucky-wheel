@@ -30,7 +30,7 @@ export default function Header() {
   `;
 
   return (
-    <header className={headerClasses}>
+    <header className={headerClasses} dir="rtl">
       <nav className="max-w-7xl mx-auto px-6 md:px-8 flex items-center justify-between">
         <div className="text-2xl font-serif font-bold bg-gradient-to-r from-charcoal to-charcoal/80 bg-clip-text text-transparent">
           <Link href="/">SHEIN</Link>
@@ -38,31 +38,31 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-8">
           <a href="#" className="text-charcoal hover:text-gold transition-colors duration-300 text-sm font-medium">
-            Home
+            الرئيسية
           </a>
           <a href="#" className="text-charcoal hover:text-gold transition-colors duration-300 text-sm font-medium">
-            About
+            عن المنصة
           </a>
           <a href="#" className="text-charcoal hover:text-gold transition-colors duration-300 text-sm font-medium">
-            Distribution
+            التوزيعات
           </a>
           <a href="#" className="text-charcoal hover:text-gold transition-colors duration-300 text-sm font-medium">
-            Steps
+            الخطوات
           </a>
           <a href="#" className="text-charcoal hover:text-gold transition-colors duration-300 text-sm font-medium">
-            Explore
+            اكتشفي
           </a>
           <a href="#" className="text-charcoal hover:text-gold transition-colors duration-300 text-sm font-medium">
-            FAQs
+            الأسئلة الشائعة
           </a>
         </div>
 
         <div className="flex items-center gap-4">
           <button className="text-charcoal hover:text-gold transition-colors duration-300 font-semibold text-sm">
-            Log in
+            تسجيل الدخول
           </button>
           <button className="bg-charcoal text-white px-6 py-2 rounded-full font-semibold hover:bg-charcoal/90 transition-all duration-300 hover:shadow-lg">
-            Sign up
+            إنشاء حساب
           </button>
         </div>
       </nav>
