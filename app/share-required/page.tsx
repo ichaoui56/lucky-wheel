@@ -13,28 +13,28 @@ export default function ShareRequiredPage() {
   const [baseUrl, setBaseUrl] = useState<string>('');
 
   const shareMessages = {
-    1: `🔥 بنات شوفو هاللعبة!
-أنا جربتها وربحت قسيمة من SHEIN 😍🔥
-قالولي لازم نشاركها مع صحابي باش نأكد الجائزة، جربو حظكم زادة 👇
+    1: `بنات شوفو هاللعبة!
+أنا جربتها وربحت قسيمة من SHEIN
+قالولي لازم نشاركها مع صحابي باش نأكد الجائزة، جربو حظكم زادة 
 
 ${baseUrl}`,
-    
-    2: `🚨 عرض محدود للبنات في تونس!
-دوّر الدولاب واربح قسائم SHEIN حتى 50 دينار 💳✨
-أنا قريب ربحت 😱
-سارعو قبل ما تسكّر 👇
+
+    2: `عرض محدود للبنات في تونس!
+دوّر الدولاب واربح قسائم SHEIN حتى 50 دينار
+أنا قريب ربحت
+سارعو قبل ما تسكّر 
 
 ${baseUrl}`,
-    
-    3: `😱 ما نصدقش اللي صارلي!
-جربت لعبة بالصدفة وربحت قسيمة من SHEIN 😍
-لازمكم تشوفوها بنفسكم 👇
+
+    3: `ما نصدقش اللي صارلي!
+جربت لعبة بالصدفة وربحت قسيمة من SHEIN
+لازمكم تشوفوها بنفسكم 
 
 ${baseUrl}`,
-    
-    4: `🎁 لعبة SHEIN في تونس توّا!
-دوّر الدولاب وربح هدايا وقسائم 💖
-أنا نلعب فيها توّا 😍👇
+
+    4: `لعبة SHEIN في تونس توّا!
+دوّر الدولاب وربح هدايا وقسائم
+أنا نلعب فيها توّا 
 
 ${baseUrl}`
   };
@@ -42,7 +42,7 @@ ${baseUrl}`
   useEffect(() => {
     // Set base URL after component mounts (client-side only)
     setBaseUrl(window.location.origin);
-    
+
     // Check if user info exists
     const userInfo = localStorage.getItem('userInfo');
     if (!userInfo) {
@@ -117,7 +117,7 @@ ${baseUrl}`
               <span className="font-bold text-[#c9a96e]">{remaining}/10 مشاركة</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
-              <div 
+              <div
                 className="bg-gradient-to-r from-[#c9a96e] to-[#b8925a] h-3 rounded-full transition-all duration-500"
                 style={{ width: `${remaining !== null ? ((10 - remaining) / 10) * 100 : 0}%` }}
               />
@@ -132,47 +132,43 @@ ${baseUrl}`
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <button
                 onClick={() => setSelectedVariant(1)}
-                className={`p-3 rounded-xl text-right transition-all ${
-                  selectedVariant === 1 
-                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                className={`p-3 rounded-xl text-right transition-all ${selectedVariant === 1
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]'
                     : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
-                }`}
+                  }`}
               >
                 <div className="font-bold text-sm mb-1">🔥 طبيعي وفعّال</div>
                 <p className="text-xs text-gray-600 line-clamp-2">بنات شوفو هاللعبة! أنا جربتها وربحت...</p>
               </button>
-              
+
               <button
                 onClick={() => setSelectedVariant(2)}
-                className={`p-3 rounded-xl text-right transition-all ${
-                  selectedVariant === 2 
-                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                className={`p-3 rounded-xl text-right transition-all ${selectedVariant === 2
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]'
                     : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
-                }`}
+                  }`}
               >
                 <div className="font-bold text-sm mb-1">⚡ عرض محدود + استعجال</div>
                 <p className="text-xs text-gray-600 line-clamp-2">🚨 عرض محدود للبنات في تونس! دوّر الدولاب...</p>
               </button>
-              
+
               <button
                 onClick={() => setSelectedVariant(3)}
-                className={`p-3 rounded-xl text-right transition-all ${
-                  selectedVariant === 3 
-                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                className={`p-3 rounded-xl text-right transition-all ${selectedVariant === 3
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]'
                     : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
-                }`}
+                  }`}
               >
                 <div className="font-bold text-sm mb-1">💣 فضول قوي</div>
                 <p className="text-xs text-gray-600 line-clamp-2">😱 ما نصدقش اللي صارلي! جربت لعبة بالصدفة...</p>
               </button>
-              
+
               <button
                 onClick={() => setSelectedVariant(4)}
-                className={`p-3 rounded-xl text-right transition-all ${
-                  selectedVariant === 4 
-                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]' 
+                className={`p-3 rounded-xl text-right transition-all ${selectedVariant === 4
+                    ? 'bg-[#c9a96e]/20 border-2 border-[#c9a96e]'
                     : 'bg-gray-50 border border-gray-200 hover:border-[#c9a96e]'
-                }`}
+                  }`}
               >
                 <div className="font-bold text-sm mb-1">🎯 مباشر + فيروسي</div>
                 <p className="text-xs text-gray-600 line-clamp-2">🎁 لعبة SHEIN في تونس توّا! دوّر الدولاب...</p>
@@ -203,7 +199,7 @@ ${baseUrl}`
           {/* Info Message */}
           <div className="mt-6 p-3 bg-amber-50 rounded-lg border border-amber-200">
             <p className="text-xs text-amber-800 text-center">
-              💡 نصيحة: اختاري الرسالة اللي تناسب صديقاتك عشان تزيدي فرصة الفوز! 
+              💡 نصيحة: اختاري الرسالة اللي تناسب صديقاتك عشان تزيدي فرصة الفوز!
               كل مشاركة توصل تحسبلك تلقائياً.
             </p>
           </div>
