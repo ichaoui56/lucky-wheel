@@ -8,6 +8,7 @@ import ArticlesCarousel from '@/components/ArticlesCarousel';
 import SpinningWheel, { SpinningWheelHandle } from '@/components/SpinningWheel';
 import Confetti from 'react-confetti';
 import { useRouter } from 'next/navigation';
+import ShoppingGuide from '@/components/ShoppingGuide';
 
 const STORAGE_KEYS = {
   SPIN_COUNT: 'wheel_spinCount',
@@ -231,7 +232,7 @@ export default function Home() {
         </div>
 
         {/* Testimonials Card */}
-        <div className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-12 border border-beige">
+        <div id="blog" className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-12 border border-beige">
           <div className="text-center mb-6">
             <h2 className="text-2xl md:text-3xl font-bold text-charcoal">💬 آراء البنات</h2>
             <p className="text-charcoal/60 mt-1">شوفي اللي ربحوا قبل</p>
@@ -239,6 +240,8 @@ export default function Home() {
           </div>
           <TestimonialCarousel />
         </div>
+
+        <ShoppingGuide />
 
         {/* Articles Section - New */}
         <div className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-beige">

@@ -1,87 +1,14 @@
 // components/ArticlesCarousel.tsx
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
-
-interface Article {
-  id: number;
-  title: string;
-  slug: string;
-  excerpt: string;
-  category: string;
-  readTime: string;
-  date: string;
-}
-
-// Same articles data as above
-const articles: Article[] = [
-  {
-    id: 1,
-    title: "الدليل الشامل لاستخراج واستخدام البطاقة التكنولوجية الدولية في تونس 2026",
-    slug: "cti-card-tunisia-comprehensive-guide",
-    excerpt: "تعد البطاقة التكنولوجية الدولية في تونس حجر الزاوية لكل من يرغب في ولوج عالم التجارة الإلكترونية العالمية",
-    category: "دليل التسوق",
-    readTime: "5 دقائق",
-    date: "2026-01-15"
-  },
-  {
-    id: 2,
-    title: "أسرار تتبع الطرود والتعامل مع الديوانة التونسية عند الشراء من SHEIN",
-    slug: "shein-tunisia-customs-tracking-secrets",
-    excerpt: "يعتبر انتظار الطرد هو الجزء الأكثر حماسا في تجربة التسوق من SHEIN",
-    category: "الشحن والتوصيل",
-    readTime: "4 دقائق",
-    date: "2026-01-20"
-  },
-  {
-    id: 3,
-    title: "كيف تختار ملابس SHEIN المناسبة لحرارة الصيف في تونس دليل الأقمشة",
-    slug: "choosing-summer-clothes-tunisia-guide",
-    excerpt: "الصيف في تونس يتميز بحرارة شديدة ورطوبة عالية، لذا اختيار القماش المناسب مهم جدا",
-    category: "نصائح تسوق",
-    readTime: "6 دقائق",
-    date: "2026-01-25"
-  },
-  {
-    id: 4,
-    title: "الرزنامة السنوية لأقوى تخفيضات وعروض SHEIN في تونس 2026",
-    slug: "shein-tunisia-sales-calendar-2026",
-    excerpt: "تعرف على أفضل أوقات التسوق من SHEIN لتوفير المال والحصول على أفضل العروض",
-    category: "عروض وتخفيضات",
-    readTime: "4 دقائق",
-    date: "2026-01-10"
-  },
-  {
-    id: 5,
-    title: "حقوق المستهلك: كيفية المطالبة بالتعويض عن تأخر الشحنات الدولية",
-    slug: "how-to-claim-compensation-for-delayed-shipping",
-    excerpt: "تعرف على حقوقك عند تأخر شحناتك الدولية وكيفية المطالبة بالتعويض",
-    category: "حقوق المستهلك",
-    readTime: "7 دقائق",
-    date: "2026-01-05"
-  },
-  {
-    id: 6,
-    title: "أفضل 5 بطاقات ائتمان للتسوق الدولي عبر الإنترنت في 2026",
-    slug: "best-credit-cards-for-international-shopping-2026",
-    excerpt: "اختر أفضل بطاقة ائتمان للتسوق الدولي ووفر على رسوم المعاملات الأجنبية",
-    category: "خدمات مالية",
-    readTime: "6 دقائق",
-    date: "2026-01-18"
-  },
-  {
-    id: 7,
-    title: "اتجاهات الأمن السيبراني: حماية بياناتك المالية من التصيد بالذكاء الاصطناعي",
-    slug: "cybersecurity-shopping-trends-2026-protection-guide",
-    excerpt: "تعرف على أحدث طرق حماية بياناتك المالية من هجمات التصيد بالذكاء الاصطناعي",
-    category: "أمن المعلومات",
-    readTime: "5 دقائق",
-    date: "2026-01-22"
-  }
-];
+import Image from 'next/image';
+import { articles, Article } from '@/lib/articles';
 
 function ArticleCard({ article }: { article: Article }) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <Link href={`/blog/${article.slug}`}>
       <div className="flex-shrink-0 w-80 bg-white border border-[#e0d9cf] rounded-xl overflow-hidden transition-all duration-300 ease-in-out cursor-pointer group hover:shadow-[0_8px_32px_rgba(180,140,80,0.2)] hover:scale-105"
@@ -93,9 +20,20 @@ function ArticleCard({ article }: { article: Article }) {
       >
         <div className="relative w-full h-48 bg-gradient-to-br from-beige to-cream overflow-hidden">
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 z-10" />
-          <div className="w-full h-full flex items-center justify-center text-6xl bg-amber-50">
-            📚
-          </div>
+          {!imgError ? (
+            <Image
+              src={article.image}
+              alt={article.title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 350px) 100vw, 350px"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-6xl bg-amber-50">
+              📚
+            </div>
+          )}
         </div>
 
         <div className="px-3 pt-3">

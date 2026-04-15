@@ -3,17 +3,15 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Link from 'next/link';
 import { articles, Article } from '@/lib/articles';
+import RelatedArticleCard from '@/components/RelatedArticleCard';
 
-// Helper to get article by slug
 function getArticleBySlug(slug: string): Article | undefined {
   return articles.find(a => a.slug === slug);
 }
-
-// Generate metadata dynamically (for server component - but this is client component, so we'll use next/head)
-// Instead, we'll use useEffect to update document head
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -22,6 +20,7 @@ export default function BlogPostPage() {
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [isCopied, setIsCopied] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const slug = params?.slug as string;
@@ -46,7 +45,6 @@ export default function BlogPostPage() {
       document.head.appendChild(meta);
     }
     
-    // Update keywords
     let metaKeywords = document.querySelector('meta[name="keywords"]');
     if (metaKeywords) {
       metaKeywords.setAttribute('content', found.keywords.join(', '));
@@ -57,7 +55,6 @@ export default function BlogPostPage() {
       document.head.appendChild(meta);
     }
     
-    // Add canonical URL
     let canonical = document.querySelector('link[rel="canonical"]');
     const canonicalUrl = `https://lucky-wheel-kappa.vercel.app/blog/${found.slug}`;
     if (canonical) {
@@ -151,7 +148,7 @@ export default function BlogPostPage() {
       document.head.appendChild(meta);
     }
     
-    // Add JSON-LD structured data
+    // JSON-LD structured data
     const jsonLd = {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
@@ -180,16 +177,14 @@ export default function BlogPostPage() {
     };
     
     let existingScript = document.querySelector('#structured-data');
-    if (existingScript) {
-      existingScript.remove();
-    }
+    if (existingScript) existingScript.remove();
     const script = document.createElement('script');
     script.id = 'structured-data';
     script.type = 'application/ld+json';
     script.textContent = JSON.stringify(jsonLd);
     document.head.appendChild(script);
     
-    // Find related articles
+    // Related articles
     const sameCategory = articles.filter(a => a.id !== found.id && a.category === found.category);
     const otherCategory = articles.filter(a => a.id !== found.id && a.category !== found.category);
     let related = [...sameCategory];
@@ -197,11 +192,6 @@ export default function BlogPostPage() {
       related = [...related, ...otherCategory.slice(0, 3 - related.length)];
     }
     setRelatedArticles(related.slice(0, 3));
-    
-    // Cleanup function to remove added meta tags when component unmounts (optional)
-    return () => {
-      // Don't remove canonical and essential tags to avoid issues
-    };
   }, [params, router]);
 
   useEffect(() => {
@@ -215,13 +205,11 @@ export default function BlogPostPage() {
   }, []);
 
   const handleCopyLink = async () => {
-    const url = window.location.href;
-    await navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText(window.location.href);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  
   if (!article) {
     return (
       <main className="min-h-screen bg-[#f7f2ed]">
@@ -240,7 +228,11 @@ export default function BlogPostPage() {
     <main className="min-h-screen bg-gradient-to-b from-[#f7f2ed] to-white">
       <Header />
       
-     
+      {/* Scroll progress bar */}
+      <div className="fixed top-0 left-0 w-full h-1 z-50 bg-gold-dark/30">
+        <div className="h-full bg-gold-dark transition-all duration-200" style={{ width: `${scrollProgress}%` }} />
+      </div>
+
       <article className="max-w-4xl mx-auto px-4 py-28" dir="rtl">
         {/* Back button */}
         <button
@@ -251,20 +243,30 @@ export default function BlogPostPage() {
           <span className="text-sm font-medium">العودة إلى الرئيسية</span>
         </button>
 
-        {/* Hero Section */}
-        <div className="relative rounded-3xl overflow-hidden mb-10">
+        {/* Featured Image */}
+        <div className="relative rounded-3xl overflow-hidden mb-10 shadow-xl">
           <div className="relative w-full h-80 md:h-[450px] bg-gradient-to-br from-amber-100 via-beige/50 to-cream">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-              <div className="text-8xl mb-4">📚✨</div>
-              <p className="text-white font-medium text-lg drop-shadow-lg bg-black/30 px-6 py-2 rounded-full backdrop-blur-sm">
-                {article.category}
-              </p>
-            </div>
+            {!imgError ? (
+              <Image
+                src={article.image}
+                alt={article.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 1200px"
+                priority
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-8xl bg-amber-50">
+                📚✨
+              </div>
+            )}
+            {/* Gradient overlay for better text contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
           </div>
           
           {/* Category Badge */}
-          <div className="absolute top-4 right-4 z-30">
+          <div className="absolute top-4 right-4 z-20">
             <span className="inline-block text-xs font-bold text-white bg-gold-dark/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
               {article.category}
             </span>
@@ -277,7 +279,6 @@ export default function BlogPostPage() {
             {article.title}
           </h1>
           
-          {/* Meta info */}
           <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 pb-6 border-b border-beige">
             <div className="flex items-center gap-2 bg-white/50 rounded-full px-3 py-1.5">
               <span className="text-lg">📖</span>
@@ -340,37 +341,7 @@ export default function BlogPostPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedArticles.map(related => (
-                <Link key={related.id} href={`/blog/${related.slug}`}>
-                  <div className="group bg-white rounded-2xl overflow-hidden border border-beige hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                    <div className="h-40 bg-gradient-to-br from-beige to-cream flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-                      <span className="text-5xl group-hover:scale-110 transition-transform duration-300">📚</span>
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-bold text-gold-dark bg-beige/30 px-2 py-1 rounded-full">
-                          {related.category}
-                        </span>
-                        <span className="text-xs text-gray-400">📖 {related.readTime}</span>
-                      </div>
-                      <h4 className="font-bold text-charcoal mb-2 line-clamp-2 group-hover:text-gold-dark transition-colors text-base">
-                        {related.title}
-                      </h4>
-                      <p className="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed">
-                        {related.excerpt}
-                      </p>
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-beige/50">
-                        <div className="flex items-center gap-1 text-xs text-gray-400">
-                          <span>📅</span>
-                          <span>{new Date(related.date).toLocaleDateString('ar-TN')}</span>
-                        </div>
-                        <span className="text-xs text-gold-dark group-hover:underline flex items-center gap-1">
-                          اقرأ المزيد <span className="group-hover:translate-x-1 transition-transform">←</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <RelatedArticleCard key={related.id} article={related} />
               ))}
             </div>
           </div>

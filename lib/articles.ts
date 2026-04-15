@@ -28,7 +28,7 @@ export const articles: Article[] = [
 
 <h2>نصائح لتجنب رفض المعاملات</h2>
 <p>كثيراً ما يشتكي المستخدمون من رسالة "Transaction Declined". غالباً ما يكون السبب هو محاولة شراء مبلغ يتجاوز الرصيد المتاح أو محاولة الشراء من موقع غير مصنف ضمن فئات "التكنولوجيا والتعليم". بما أن شي إن مصنف كمتجر تجزئة، تأكد من أن بنكك يدعم الشراء منه عبر البطاقة التكنولوجية قبل شحن الرصيد بمبالغ كبيرة.</p>`,
-    image: "/articles/cti-card.jpg",
+    image: "/blogs/cti-card-tunisia-comprehensive-guide.jpg",
     category: "دليل التسوق",
     readTime: "5 دقائق",
     date: "2026-01-15",
@@ -49,7 +49,7 @@ export const articles: Article[] = [
 
 <h2>ماذا تفعل إذا تأخر الطرد؟</h2>
 <p>إذا لاحظت أن الطرد عالق في وضعية "In Customs" لأكثر من 10 أيام، ننصحك بالتوجه إلى مركز الفرز البريدي بقرطاج أو الاتصال بمكتب البريد القريب منك. في بعض الأحيان، يكون هناك نقص في المعلومات (مثل رقم الهاتف) مما يعطل عملية التسليم. التواصل المباشر غالباً ما يحل هذه المشاكل بسرعة.</p>`,
-    image: "/articles/customs-tracking.jpg",
+    image: "/blogs/shein-tunisia-customs-tracking-secrets.jpg",
     category: "الشحن والتوصيل",
     readTime: "4 دقائق",
     date: "2026-01-20",
@@ -70,7 +70,7 @@ export const articles: Article[] = [
 
 <h2>كيف تقرأ مواصفات المنتج بذكاء؟</h2>
 <p>لا تكتفِ بالصور. انزل إلى أسفل الصفحة وافتح تبويب "Description" ثم "Composition". إذا وجدت كلمة "Non-Stretch" فهذا يعني أن القماش لا يتمدد، لذا قد تحتاج لطلب مقاس أكبر لضمان الراحة. قراءة تعليقات التونسيات اللواتي اشترين المنتج قبلك مفيد جداً، فهن غالباً ما يذكرن إذا كان القماش "يشعل بالنار" (حار) أو "خفيف وبارد".</p>`,
-    image: "/articles/summer-clothes.jpg",
+    image: "/blogs/choosing-summer-clothes-tunisia-guide.jpg",
     category: "نصائح تسوق",
     readTime: "6 دقائق",
     date: "2026-01-25",
@@ -91,7 +91,7 @@ export const articles: Article[] = [
 
 <h2>تخفيضات نهاية الموسم (Clearance)</h2>
 <p>في نهاية كل فصل (فيفري للملابس الشتوية، وأوت للملابس الصيفية)، تقوم شي إن بتصفية المخزون. هذه هي الفرصة الذهبية لشراء ملابس الموسم القادم وتخزينها. قد تجد معاطف شتوية ثقيلة بأسعار رمزية لأن الطلب عليها قلّ في تلك الفترة.</p>`,
-    image: "/articles/sales-calendar.jpg",
+    image: "/blogs/shein-tunisia-sales-calendar-2026.jpg",
     category: "عروض وتخفيضات",
     readTime: "4 دقائق",
     date: "2026-01-10",
@@ -109,7 +109,7 @@ export const articles: Article[] = [
 
 <h2>Steps to File a Successful Claim</h2>
 <p>First, document everything. Take screenshots of the original delivery estimate and the actual tracking history. Second, initiate a formal inquiry with the carrier (e.g., DHL, FedEx, or UPS) to receive a "Service Failure" confirmation. Finally, contact the retailer's support team with this evidence. Most large platforms prefer to issue a voucher or a refund rather than facing a formal dispute via payment gateways like PayPal or Stripe. Knowing these steps ensures you are never the victim of inefficient global logistics.</p>`,
-    image: "/articles/shipping-delay.jpg",
+    image: "/blogs/how-to-claim-compensation-for-delayed-shipping.jpg",
     category: "Consumer Rights",
     readTime: "7 min",
     date: "2026-01-05",
@@ -127,7 +127,7 @@ export const articles: Article[] = [
 
 <h2>Comparing Purchase Protection Policies</h2>
 <p>The best credit cards for 2026 aren't just about rewards; they are about security. "Purchase Protection" is a vital feature that covers your items against theft or accidental damage for up to 90 days after purchase. We analyzed the top 5 cards currently on the market, looking at their annual fees versus their benefit packages. Whether you are a casual shopper or a high-volume "drop-shipper," choosing a card with robust encryption and integrated fraud detection is essential for a safe global shopping experience.</p>`,
-    image: "/articles/credit-cards.jpg",
+    image: "/blogs/best-credit-cards-for-international-shopping-2026.jpg",
     category: "Financial Services",
     readTime: "6 min",
     date: "2026-01-18",
@@ -145,7 +145,7 @@ export const articles: Article[] = [
 
 <h2>Identifying Synthetic Fraud and Deepfake Scams</h2>
 <p>As we move further into 2026, hackers are using deepfake technology to impersonate customer service representatives. Always remember that legitimate platforms like SHEIN or Amazon will never ask for your full password or CVV over the phone or through a social media DM. Implementing Multi-Factor Authentication (MFA) using hardware keys or authenticator apps is no longer optional—it is a mandatory shield for your digital life. By staying informed on these latest trends, you ensure that your personal data remains private while you enjoy the benefits of the global digital marketplace.</p>`,
-    image: "/articles/cybersecurity.jpg",
+    image: "/blogs/cybersecurity-shopping-trends-2026-protection-guide.jpg",
     category: "Cybersecurity",
     readTime: "5 min",
     date: "2026-01-22",
