@@ -221,10 +221,7 @@ export default function BlogPostPage() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
+  
   if (!article) {
     return (
       <main className="min-h-screen bg-[#f7f2ed]">
@@ -243,14 +240,7 @@ export default function BlogPostPage() {
     <main className="min-h-screen bg-gradient-to-b from-[#f7f2ed] to-white">
       <Header />
       
-      {/* Progress Bar */}
-      <div className="fixed top-20 left-0 right-0 h-1 bg-beige z-40">
-        <div 
-          className="h-full bg-gold-dark transition-all duration-200"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-      
+     
       <article className="max-w-4xl mx-auto px-4 py-28" dir="rtl">
         {/* Back button */}
         <button
@@ -386,70 +376,6 @@ export default function BlogPostPage() {
           </div>
         )}
       </article>
-
-      {/* Footer Section */}
-      <footer className="bg-charcoal text-white/80 mt-16" dir="rtl">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="text-xl font-bold text-gold-dark mb-4">عن الموقع</h3>
-              <p className="text-sm leading-relaxed">
-                منصة ترفيهية تقدم ألعاباً تفاعلية وجوائز قيمة لمحبي التسوق في تونس. نهدف إلى إضفاء المتعة والإثارة على تجربة التسوق الخاصة بك.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gold-dark mb-4">روابط سريعة</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/" className="hover:text-gold-dark transition-colors">الرئيسية</Link></li>
-                <li><a href="#wheel-section" className="hover:text-gold-dark transition-colors cursor-pointer">عجلة الحظ</a></li>
-                <li><Link href="/winning-info" className="hover:text-gold-dark transition-colors">الجوائز</Link></li>
-                <li><Link href="/blog" className="hover:text-gold-dark transition-colors">المقالات</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gold-dark mb-4">سياسات الموقع</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/privacy-policy" className="hover:text-gold-dark transition-colors">سياسة الخصوصية</Link></li>
-                <li><Link href="/terms-of-service" className="hover:text-gold-dark transition-colors">اتفاقية الاستخدام</Link></li>
-                <li><Link href="/cookie-policy" className="hover:text-gold-dark transition-colors">سياسة ملفات الارتباط</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gold-dark mb-4">تواصلي معنا</h3>
-              <div className="flex gap-3 mb-4">
-                <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gold-dark transition-colors">
-                  <span className="text-xl">📧</span>
-                </a>
-                <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gold-dark transition-colors">
-                  <span className="text-xl">📱</span>
-                </a>
-                <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gold-dark transition-colors">
-                  <span className="text-xl">💬</span>
-                </a>
-              </div>
-              <p className="text-sm text-white/60">
-                البريد الإلكتروني: support@sheinspin.com
-              </p>
-            </div>
-          </div>
-          <div className="border-t border-white/10 pt-6 mt-6">
-            <p className="text-xs text-white/50 text-center leading-relaxed">
-              هذا الموقع ليس جزءاً من شركة SHEIN الرسمية ولا يمثلها بشكل قانوني. نحن موقع مستقل يقدم عروضاً ترويجية ومسابقات ترفيهية لمستخدمينا في تونس. جميع العلامات التجارية والشعارات هي ملك لأصحابها الأصليين.
-            </p>
-            <p className="text-xs text-white/40 text-center mt-3">
-              © 2026 جميع الحقوق محفوظة | تصميم وتطوير بواسطة SHEIN Spin
-            </p>
-          </div>
-        </div>
-      </footer>
-
-      {/* Floating Back to Top Button */}
-      <button
-        onClick={scrollToTop}
-        className="fixed bottom-6 right-6 bg-gold-dark text-white w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center hover:scale-110 z-50"
-      >
-        <span className="text-xl">↑</span>
-      </button>
     </main>
   );
 }

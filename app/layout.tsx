@@ -2,6 +2,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Cairo } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import Footer from '@/components/Footer'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -111,6 +112,7 @@ export default function RootLayout({
       </head>
       <body className="font-sans bg-[#f7f2ed] antialiased">
         {children}
+        <Footer />
         {process.env.NODE_ENV === 'production' && <Analytics />}
         
         {/* JSON-LD Organization Schema */}
