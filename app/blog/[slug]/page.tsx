@@ -5,102 +5,15 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Link from 'next/link';
+import { articles, Article } from '@/lib/articles';
 
-// Article type definition
-interface Article {
-  id: number;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  image: string;
-  category: string;
-  readTime: string;
-  date: string;
+// Helper to get article by slug
+function getArticleBySlug(slug: string): Article | undefined {
+  return articles.find(a => a.slug === slug);
 }
 
-// Articles data
-const articles: Article[] = [
-  {
-    id: 1,
-    title: "الدليل الشامل لاستخراج واستخدام البطاقة التكنولوجية الدولية في تونس 2026",
-    slug: "cti-card-tunisia-comprehensive-guide",
-    excerpt: "تعد البطاقة التكنولوجية الدولية في تونس حجر الزاوية لكل من يرغب في ولوج عالم التجارة الإلكترونية العالمية",
-    content: `<p>تعد البطاقة التكنولوجية الدولية في تونس حجر الزاوية لكل من يرغب في ولوج عالم التجارة الإلكترونية العالمية، خاصة لمحبي التسوق من منصات كبرى مثل شي إن.</p>
-<h2>كيفية الحصول على البطاقة</h2>
-<p>يمكنك الحصول على هذه البطاقة من خلال البريد التونسي أو عبر البنوك التجارية.</p>`,
-    image: "/articles/cti-card.jpg",
-    category: "دليل التسوق",
-    readTime: "5 دقائق",
-    date: "2026-01-15"
-  },
-  {
-    id: 2,
-    title: "أسرار تتبع الطرود والتعامل مع الديوانة التونسية عند الشراء من شي إن",
-    slug: "shein-tunisia-customs-tracking-secrets",
-    excerpt: "يعتبر انتظار الطرد هو الجزء الأكثر حماسا في تجربة التسوق من شي إن",
-    content: `<p>يعتبر انتظار الطرد هو الجزء الأكثر حماسا في تجربة التسوق من شي إن.</p>`,
-    image: "/articles/customs-tracking.jpg",
-    category: "الشحن والتوصيل",
-    readTime: "4 دقائق",
-    date: "2026-01-20"
-  },
-  {
-    id: 3,
-    title: "كيف تختار ملابس شي إن المناسبة لحرارة الصيف في تونس",
-    slug: "choosing-summer-clothes-tunisia-guide",
-    excerpt: "الصيف في تونس يتميز بحرارة شديدة ورطوبة عالية",
-    content: `<p>الصيف في تونس يتميز بحرارة شديدة ورطوبة عالية.</p>`,
-    image: "/articles/summer-clothes.jpg",
-    category: "نصائح تسوق",
-    readTime: "6 دقائق",
-    date: "2026-01-25"
-  },
-  {
-    id: 4,
-    title: "الرزنامة السنوية لأقوى تخفيضات وعروض شي إن في تونس 2026",
-    slug: "shein-tunisia-sales-calendar-2026",
-    excerpt: "تعرف على أفضل أوقات التسوق من شي إن لتوفير المال",
-    content: `<p>تعرف على أفضل أوقات التسوق من شي إن لتوفير المال.</p>`,
-    image: "/articles/sales-calendar.jpg",
-    category: "عروض وتخفيضات",
-    readTime: "4 دقائق",
-    date: "2026-01-10"
-  },
-  {
-    id: 5,
-    title: "حقوق المستهلك: كيفية المطالبة بالتعويض عن تأخر الشحنات الدولية",
-    slug: "how-to-claim-compensation-for-delayed-shipping",
-    excerpt: "تعرف على حقوقك عند تأخر شحناتك الدولية",
-    content: `<p>تعرف على حقوقك عند تأخر شحناتك الدولية.</p>`,
-    image: "/articles/shipping-delay.jpg",
-    category: "حقوق المستهلك",
-    readTime: "7 دقائق",
-    date: "2026-01-05"
-  },
-  {
-    id: 6,
-    title: "أفضل 5 بطاقات ائتمان للتسوق الدولي عبر الإنترنت في 2026",
-    slug: "best-credit-cards-for-international-shopping-2026",
-    excerpt: "اختر أفضل بطاقة ائتمان للتسوق الدولي",
-    content: `<p>اختر أفضل بطاقة ائتمان للتسوق الدولي.</p>`,
-    image: "/articles/credit-cards.jpg",
-    category: "خدمات مالية",
-    readTime: "6 دقائق",
-    date: "2026-01-18"
-  },
-  {
-    id: 7,
-    title: "اتجاهات الأمن السيبراني: حماية بياناتك المالية",
-    slug: "cybersecurity-shopping-trends-2026-protection-guide",
-    excerpt: "تعرف على أحدث طرق حماية بياناتك المالية",
-    content: `<p>تعرف على أحدث طرق حماية بياناتك المالية.</p>`,
-    image: "/articles/cybersecurity.jpg",
-    category: "أمن المعلومات",
-    readTime: "5 دقائق",
-    date: "2026-01-22"
-  }
-];
+// Generate metadata dynamically (for server component - but this is client component, so we'll use next/head)
+// Instead, we'll use useEffect to update document head
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -112,7 +25,7 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     const slug = params?.slug as string;
-    const found = articles.find(a => a.slug === slug);
+    const found = getArticleBySlug(slug);
     
     if (!found) {
       router.push('/');
@@ -121,15 +34,174 @@ export default function BlogPostPage() {
     
     setArticle(found);
     
-    // Find related articles (same category, excluding current)
+    // Update document title and meta tags for SEO
+    document.title = `${found.title} | SHEIN Spin Tunisia`;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', found.excerpt);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = found.excerpt;
+      document.head.appendChild(meta);
+    }
+    
+    // Update keywords
+    let metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute('content', found.keywords.join(', '));
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'keywords';
+      meta.content = found.keywords.join(', ');
+      document.head.appendChild(meta);
+    }
+    
+    // Add canonical URL
+    let canonical = document.querySelector('link[rel="canonical"]');
+    const canonicalUrl = `https://lucky-wheel-kappa.vercel.app/blog/${found.slug}`;
+    if (canonical) {
+      canonical.setAttribute('href', canonicalUrl);
+    } else {
+      const link = document.createElement('link');
+      link.rel = 'canonical';
+      link.href = canonicalUrl;
+      document.head.appendChild(link);
+    }
+    
+    // Open Graph tags
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', found.title);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:title');
+      meta.content = found.title;
+      document.head.appendChild(meta);
+    }
+    
+    let ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', found.excerpt);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:description');
+      meta.content = found.excerpt;
+      document.head.appendChild(meta);
+    }
+    
+    let ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+      ogUrl.setAttribute('content', canonicalUrl);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:url');
+      meta.content = canonicalUrl;
+      document.head.appendChild(meta);
+    }
+    
+    let ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage) {
+      ogImage.setAttribute('content', `https://lucky-wheel-kappa.vercel.app${found.image}`);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:image');
+      meta.content = `https://lucky-wheel-kappa.vercel.app${found.image}`;
+      document.head.appendChild(meta);
+    }
+    
+    let ogType = document.querySelector('meta[property="og:type"]');
+    if (ogType) {
+      ogType.setAttribute('content', 'article');
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:type');
+      meta.content = 'article';
+      document.head.appendChild(meta);
+    }
+    
+    // Twitter Card
+    let twitterCard = document.querySelector('meta[name="twitter:card"]');
+    if (twitterCard) {
+      twitterCard.setAttribute('content', 'summary_large_image');
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'twitter:card';
+      meta.content = 'summary_large_image';
+      document.head.appendChild(meta);
+    }
+    
+    let twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) {
+      twitterTitle.setAttribute('content', found.title);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'twitter:title';
+      meta.content = found.title;
+      document.head.appendChild(meta);
+    }
+    
+    let twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDescription) {
+      twitterDescription.setAttribute('content', found.excerpt);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'twitter:description';
+      meta.content = found.excerpt;
+      document.head.appendChild(meta);
+    }
+    
+    // Add JSON-LD structured data
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": found.title,
+      "description": found.excerpt,
+      "image": `https://lucky-wheel-kappa.vercel.app${found.image}`,
+      "datePublished": found.date,
+      "dateModified": found.date,
+      "author": {
+        "@type": "Organization",
+        "name": "SHEIN Spin Tunisia"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "SHEIN Spin Tunisia",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://lucky-wheel-kappa.vercel.app/icon.svg"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": canonicalUrl
+      },
+      "keywords": found.keywords.join(", ")
+    };
+    
+    let existingScript = document.querySelector('#structured-data');
+    if (existingScript) {
+      existingScript.remove();
+    }
+    const script = document.createElement('script');
+    script.id = 'structured-data';
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+    
+    // Find related articles
     const sameCategory = articles.filter(a => a.id !== found.id && a.category === found.category);
     const otherCategory = articles.filter(a => a.id !== found.id && a.category !== found.category);
-    
     let related = [...sameCategory];
     if (related.length < 3) {
       related = [...related, ...otherCategory.slice(0, 3 - related.length)];
     }
     setRelatedArticles(related.slice(0, 3));
+    
+    // Cleanup function to remove added meta tags when component unmounts (optional)
+    return () => {
+      // Don't remove canonical and essential tags to avoid issues
+    };
   }, [params, router]);
 
   useEffect(() => {
@@ -171,7 +243,13 @@ export default function BlogPostPage() {
     <main className="min-h-screen bg-gradient-to-b from-[#f7f2ed] to-white">
       <Header />
       
-    
+      {/* Progress Bar */}
+      <div className="fixed top-20 left-0 right-0 h-1 bg-beige z-40">
+        <div 
+          className="h-full bg-gold-dark transition-all duration-200"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
       
       <article className="max-w-4xl mx-auto px-4 py-28" dir="rtl">
         {/* Back button */}
@@ -258,7 +336,7 @@ export default function BlogPostPage() {
           </div>
         </div>
 
-        {/* Related Articles Section - Cards at the end */}
+        {/* Related Articles Section */}
         {relatedArticles.length > 0 && (
           <div className="mt-12 pt-8 border-t border-beige">
             <div className="flex items-center justify-between mb-6">
@@ -274,13 +352,10 @@ export default function BlogPostPage() {
               {relatedArticles.map(related => (
                 <Link key={related.id} href={`/blog/${related.slug}`}>
                   <div className="group bg-white rounded-2xl overflow-hidden border border-beige hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                    {/* Card Image */}
                     <div className="h-40 bg-gradient-to-br from-beige to-cream flex items-center justify-center relative overflow-hidden">
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
                       <span className="text-5xl group-hover:scale-110 transition-transform duration-300">📚</span>
                     </div>
-                    
-                    {/* Card Content */}
                     <div className="p-5">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-xs font-bold text-gold-dark bg-beige/30 px-2 py-1 rounded-full">
@@ -288,15 +363,12 @@ export default function BlogPostPage() {
                         </span>
                         <span className="text-xs text-gray-400">📖 {related.readTime}</span>
                       </div>
-                      
                       <h4 className="font-bold text-charcoal mb-2 line-clamp-2 group-hover:text-gold-dark transition-colors text-base">
                         {related.title}
                       </h4>
-                      
                       <p className="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed">
                         {related.excerpt}
                       </p>
-                      
                       <div className="flex items-center justify-between mt-2 pt-2 border-t border-beige/50">
                         <div className="flex items-center gap-1 text-xs text-gray-400">
                           <span>📅</span>
@@ -319,15 +391,12 @@ export default function BlogPostPage() {
       <footer className="bg-charcoal text-white/80 mt-16" dir="rtl">
         <div className="max-w-7xl mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            {/* About Section */}
             <div>
               <h3 className="text-xl font-bold text-gold-dark mb-4">عن الموقع</h3>
               <p className="text-sm leading-relaxed">
                 منصة ترفيهية تقدم ألعاباً تفاعلية وجوائز قيمة لمحبي التسوق في تونس. نهدف إلى إضفاء المتعة والإثارة على تجربة التسوق الخاصة بك.
               </p>
             </div>
-
-            {/* Quick Links */}
             <div>
               <h3 className="text-xl font-bold text-gold-dark mb-4">روابط سريعة</h3>
               <ul className="space-y-2 text-sm">
@@ -337,8 +406,6 @@ export default function BlogPostPage() {
                 <li><Link href="/blog" className="hover:text-gold-dark transition-colors">المقالات</Link></li>
               </ul>
             </div>
-
-            {/* Legal Pages */}
             <div>
               <h3 className="text-xl font-bold text-gold-dark mb-4">سياسات الموقع</h3>
               <ul className="space-y-2 text-sm">
@@ -347,8 +414,6 @@ export default function BlogPostPage() {
                 <li><Link href="/cookie-policy" className="hover:text-gold-dark transition-colors">سياسة ملفات الارتباط</Link></li>
               </ul>
             </div>
-
-            {/* Contact & Social */}
             <div>
               <h3 className="text-xl font-bold text-gold-dark mb-4">تواصلي معنا</h3>
               <div className="flex gap-3 mb-4">
@@ -367,11 +432,9 @@ export default function BlogPostPage() {
               </p>
             </div>
           </div>
-
-          {/* Disclaimer */}
           <div className="border-t border-white/10 pt-6 mt-6">
             <p className="text-xs text-white/50 text-center leading-relaxed">
-              هذا الموقع ليس جزءاً من شركة شي إن (SHEIN) الرسمية ولا يمثلها بشكل قانوني. نحن موقع مستقل يقدم عروضاً ترويجية ومسابقات ترفيهية لمستخدمينا في تونس. جميع العلامات التجارية والشعارات هي ملك لأصحابها الأصليين.
+              هذا الموقع ليس جزءاً من شركة SHEIN الرسمية ولا يمثلها بشكل قانوني. نحن موقع مستقل يقدم عروضاً ترويجية ومسابقات ترفيهية لمستخدمينا في تونس. جميع العلامات التجارية والشعارات هي ملك لأصحابها الأصليين.
             </p>
             <p className="text-xs text-white/40 text-center mt-3">
               © 2026 جميع الحقوق محفوظة | تصميم وتطوير بواسطة SHEIN Spin

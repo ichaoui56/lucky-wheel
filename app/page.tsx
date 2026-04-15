@@ -45,6 +45,55 @@ export default function Home() {
   const [showWinModal, setShowWinModal] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
+
+  useEffect(() => {
+    document.title = 'SHEIN Spin Tunisia | العجلة الدوارة لربح قسائم SHEIN في تونس';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'لعبة العجلة الدوارة لربح قسائم شراء من SHEIN (SHEIN) في تونس. دوري العجلة واربحي جوائز تصل إلى 500 دينار. عروض حصرية للمتسوقات التونسيات.');
+    }
+
+    // Add FAQ JSON-LD for homepage
+    const faqJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "كيف ألعب عجلة الحظ؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "كل ما عليك فعله هو الضغط على العجلة للدوران. لديك محاولتان مجانيتان. إذا ربحت، ستحتاج إلى مشاركة اللعبة مع 10 صديقات لتأكيد جائزتك."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "ما هي الجوائز التي يمكنني ربحها؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "يمكنك ربح قسائم شراء من SHEIN بقيمة تصل إلى 500 دينار تونسي، بالإضافة إلى جوائز أخرى متنوعة."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "هل الموقع مجاني؟",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "نعم، الموقع مجاني تماماً ولا يتطلب أي دفعات للمشاركة في اللعبة."
+          }
+        }
+      ]
+    };
+
+    let existingFaq = document.querySelector('#faq-jsonld');
+    if (existingFaq) existingFaq.remove();
+    const script = document.createElement('script');
+    script.id = 'faq-jsonld';
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(faqJsonLd);
+    document.head.appendChild(script);
+  }, []);
+
   // Load from localStorage
   useEffect(() => {
     const storedSpinCount = localStorage.getItem(STORAGE_KEYS.SPIN_COUNT);
@@ -128,15 +177,15 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f2ed]">
       <Header />
-      
+
       {/* Full width hero section */}
       <div className="w-full">
         <HeroSection />
       </div>
-      
+
       {/* Main content with cards */}
       <div className="flex flex-col items-center justify-center px-4 py-12 max-w-7xl mx-auto">
-        
+
         {/* Stats Cards Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 w-full">
           <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
@@ -144,19 +193,19 @@ export default function Home() {
             <div className="text-2xl font-bold text-gold-dark">{spinCount}/2</div>
             <p className="text-xs text-charcoal/60">عدد المحاولات</p>
           </div>
-          
+
           <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
             <div className="text-3xl mb-2">🏆</div>
             <div className="text-2xl font-bold text-gold-dark">500 د</div>
             <p className="text-xs text-charcoal/60">الحد الأقصى للجائزة</p>
           </div>
-          
+
           <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
             <div className="text-3xl mb-2">👭</div>
             <div className="text-2xl font-bold text-gold-dark">3,482+</div>
             <p className="text-xs text-charcoal/60">بنت لعبت اليوم</p>
           </div>
-          
+
           <div className="bg-white rounded-2xl p-4 shadow-md border border-beige text-center hover:shadow-lg transition-shadow">
             <div className="text-3xl mb-2">🎁</div>
             <div className="text-2xl font-bold text-gold-dark">يوميًا</div>
@@ -185,7 +234,7 @@ export default function Home() {
         <div className="w-full bg-white rounded-3xl shadow-xl p-6 md:p-8 mb-12 border border-beige">
           <div className="text-center mb-6">
             <h2 className="text-2xl md:text-3xl font-bold text-charcoal">💬 آراء البنات</h2>
-            <p className="text-charcoal/60 mt-1">شوفي اللي ربحوا قبلček</p>
+            <p className="text-charcoal/60 mt-1">شوفي اللي ربحوا قبل</p>
             <div className="w-20 h-0.5 bg-gold-dark mx-auto mt-3"></div>
           </div>
           <TestimonialCarousel />
@@ -224,23 +273,23 @@ export default function Home() {
       <FullScreenModal isOpen={showWinModal} onClose={closeWinModal}>
         <div className="text-center relative overflow-hidden" dir="rtl">
           <div style={{ fontSize: 52, lineHeight: 1, marginBottom: 4, letterSpacing: 4 }}>🎉✨🎊</div>
-          
+
           <h2 className="text-4xl font-bold text-[#6a4020] mb-2">🎉 مبروك! ربحت قسيمة SHEIN 🎁</h2>
-          
+
           <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-gold-dark rounded-2xl py-4 px-6 mb-4 inline-block">
             <p className="text-4xl font-bold text-gold-dark">🏆 500 دينار</p>
             <p className="text-sm text-gray-500 mt-1">بطاقة هدية SHEIN</p>
           </div>
-          
+
           <div className="bg-amber-50 border-r-4 border-amber-500 rounded-lg p-4 my-4 text-right">
             <p className="text-amber-700 font-bold text-lg mb-2">⚠️ لتأكيد الجائزة:</p>
             <p className="text-gray-800 text-md">
               شاركي اللعبة مع <span className="font-bold text-gold-dark">10 من صديقاتك</span> على واتساب 👇
             </p>
           </div>
-          
+
           <div style={{ fontSize: 28, marginBottom: 16, letterSpacing: 4 }}>💝💕💖</div>
-          
+
           <button
             onClick={() => {
               closeWinModal();

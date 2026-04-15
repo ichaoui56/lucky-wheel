@@ -27,16 +27,16 @@ const articles: Article[] = [
   },
   {
     id: 2,
-    title: "أسرار تتبع الطرود والتعامل مع الديوانة التونسية عند الشراء من شي إن",
+    title: "أسرار تتبع الطرود والتعامل مع الديوانة التونسية عند الشراء من SHEIN",
     slug: "shein-tunisia-customs-tracking-secrets",
-    excerpt: "يعتبر انتظار الطرد هو الجزء الأكثر حماسا في تجربة التسوق من شي إن",
+    excerpt: "يعتبر انتظار الطرد هو الجزء الأكثر حماسا في تجربة التسوق من SHEIN",
     category: "الشحن والتوصيل",
     readTime: "4 دقائق",
     date: "2026-01-20"
   },
   {
     id: 3,
-    title: "كيف تختار ملابس شي إن المناسبة لحرارة الصيف في تونس دليل الأقمشة",
+    title: "كيف تختار ملابس SHEIN المناسبة لحرارة الصيف في تونس دليل الأقمشة",
     slug: "choosing-summer-clothes-tunisia-guide",
     excerpt: "الصيف في تونس يتميز بحرارة شديدة ورطوبة عالية، لذا اختيار القماش المناسب مهم جدا",
     category: "نصائح تسوق",
@@ -45,9 +45,9 @@ const articles: Article[] = [
   },
   {
     id: 4,
-    title: "الرزنامة السنوية لأقوى تخفيضات وعروض شي إن في تونس 2026",
+    title: "الرزنامة السنوية لأقوى تخفيضات وعروض SHEIN في تونس 2026",
     slug: "shein-tunisia-sales-calendar-2026",
-    excerpt: "تعرف على أفضل أوقات التسوق من شي إن لتوفير المال والحصول على أفضل العروض",
+    excerpt: "تعرف على أفضل أوقات التسوق من SHEIN لتوفير المال والحصول على أفضل العروض",
     category: "عروض وتخفيضات",
     readTime: "4 دقائق",
     date: "2026-01-10"
@@ -173,11 +173,11 @@ export default function ArticlesCarousel() {
     <section className="bg-[#FDFBF7] py-12 w-full overflow-hidden">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-serif font-medium mb-2" style={{ color: '#6a4020' }}>
-          📚 مقالات شي إن تونس
+          📚 مقالات SHEIN تونس
         </h2>
         <div className="w-14 h-[3px] mx-auto rounded-full mb-3" style={{ background: 'linear-gradient(90deg, #D4AF37, #b8925a, #D4AF37)' }} />
         <p className="text-sm text-[#888]">
-          أحدث النصائح والدليلات لتسوق أذكى من شي إن في تونس
+          أحدث النصائح والدليلات لتسوق أذكى من SHEIN في تونس
         </p>
       </div>
 
